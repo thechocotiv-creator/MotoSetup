@@ -33,5 +33,8 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      - name: Prepare CI google-services.json
+        run: cp app/google-services.ci-template.json app/google-services.json
+
       - name: Unit tests + debug build
         run: ./gradlew testDebugUnitTest assembleDebug

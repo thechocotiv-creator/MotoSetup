@@ -1,0 +1,20 @@
+rules_version = '2';
+
+// Regole condivise tra iOS e Android — stesso progetto Firebase.
+// Vedi CLAUDE.md alla radice, sezione "Modello dati (Firestore)".
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+
+      match /{document=**} {
+        allow read, write: if request.auth != null && request.auth.uid == uid;
+      }
+    }
+
+    match /tracks/{trackId} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+  }
+}
