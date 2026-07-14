@@ -1,0 +1,64 @@
+name: MotoSetup
+options:
+  bundleIdPrefix: com.motosetup
+  deploymentTarget:
+    iOS: "18.0"
+  createIntermediateGroups: true
+  generateEmptyDirectories: true
+
+settings:
+  base:
+    SWIFT_VERSION: 6.0
+    IPHONEOS_DEPLOYMENT_TARGET: "18.0"
+    TARGETED_DEVICE_FAMILY: "1" # iPhone only, per design handoff
+    ENABLE_PREVIEWS: true
+    ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+    ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+    CODE_SIGN_STYLE: Automatic
+
+targets:
+  MotoSetup:
+    type: application
+    platform: iOS
+    deploymentTarget: "18.0"
+    sources:
+      - path: MotoSetup
+    info:
+      path: MotoSetup/Info.plist
+      properties:
+        CFBundleDisplayName: MotoSetup
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        ITSAppUsesNonExemptEncryption: false
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.motosetup.app
+        PRODUCT_NAME: MotoSetup
+        MARKETING_VERSION: "0.1.0"
+        CURRENT_PROJECT_VERSION: "1"
+
+  MotoSetupTests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "18.0"
+    sources:
+      - path: MotoSetupTests
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.motosetup.app.tests
+    dependencies:
+      - target: MotoSetup
+
+schemes:
+  MotoSetup:
+    build:
+      targets:
+        MotoSetup: all
+        MotoSetupTests: [test]
+    test:
+      targets:
+        - MotoSetupTests
+      config: Debug
+    run:
+      config: Debug

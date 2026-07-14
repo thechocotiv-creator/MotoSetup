@@ -1,0 +1,41 @@
+# Xcode / Swift
+.DS_Store
+build/
+DerivedData/
+*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+!*.xcodeproj/xcshareddata/
+*.xcworkspace/*
+!*.xcworkspace/contents.xcworkspacedata
+!*.xcworkspace/xcshareddata/
+xcuserdata/
+*.xcuserstate
+*.moved-aside
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# XcodeGen generates the .xcodeproj from project.yml — do not commit the generated project
+*.xcodeproj/
+
+# SPM
+.build/
+.swiftpm/
+Package.resolved
+
+# Firebase — never commit real config, CI injects it from secrets
+GoogleService-Info.plist
+
+# StoreKit local testing config can be committed (no secrets), but exclude any local overrides
+*.storekit.local
+
+# Fastlane (if added later)
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+
+# Misc
+*.log
+.env

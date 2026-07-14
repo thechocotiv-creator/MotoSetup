@@ -1,0 +1,2382 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+  <meta name="design_doc_mode" content="canvas">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; background: oklch(0.173 0 0); font-family: 'Inter', -apple-system, system-ui, sans-serif; }
+    ::-webkit-scrollbar { display: none; }
+    @keyframes fadeZoomIn { from { opacity: 0; transform: scale(1.08); } to { opacity: 1; transform: scale(1); } }
+    @keyframes slideUpIn { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    @keyframes runDetailSlideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+    image-slot::part(empty) { color: oklch(0.97 0 0); }
+  </style>
+  <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="380,823"></x-import>
+</helmet>
+
+<div style="min-width: 100%; min-height: 100%; padding: 64px; box-sizing: border-box; background: oklch(0.173 0 0);">
+
+  <div style="display: flex; align-items: baseline; gap: 14px; margin-bottom: 28px;">
+    <h1 style="color: #f2f2f2; font-size: 20px; font-weight: 600; margin: 0;">MotoSetup — Electric Blue</h1>
+    <span style="color:#8a8a8a; font-size:13px;">dark mode · Home, Setup, Consigli AI</span>
+  </div>
+
+  <div style="display: flex; gap: 28px; flex-wrap: wrap; background-color: #1F1F1F">
+
+    <!-- Onboarding -->
+    <div data-screen-label="Onboarding — Login/Registrati">
+      <div style="color:#8a8a8a; font-size:12px; font-weight:600; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.5px;">Onboarding — login/registrati, saltato se già loggato</div>
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+        <span style="color:#8a8a8a; font-size:12px; font-weight:600;">Demo: utente già loggato</span>
+        <div onClick="{{ setAuthDemoLoggedIn }}" style="width:38px; height:22px; border-radius:11px; background: {{ authToggleBg }}; position:relative; cursor:pointer;">
+          <div style="width:18px; height:18px; border-radius:50%; background:#fff; position:absolute; top:2px; left: {{ authToggleKnobPos }}; transition: left 0.18s ease;"></div>
+        </div>
+      </div>
+      <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" dark="{{true}}" width="{{380}}" height="{{823}}" hint-size="380,823">
+        <div style="height:100%; display:flex; flex-direction:column; background: oklch(0.173 0 0); font-family:'Inter',sans-serif; position:relative; overflow:hidden;">
+
+          <sc-if value="{{ authIsLoggedIn }}" hint-placeholder-val="{{ false }}">
+            <div style="height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 0 30px; text-align:center;">
+              <div style="width:64px; height:64px; border-radius:50%; background: oklch(0.87 0.18 250 / 0.16); display:flex; align-items:center; justify-content:center; margin-bottom:18px;">
+                <svg width="26" height="26" viewBox="0 0 14 14"><path d="M2 7l3.5 3.5L12 3" fill="none" stroke="oklch(0.87 0.18 250)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+              </div>
+              <div style="color: oklch(0.97 0 0); font-size:20px; font-weight:800; margin-bottom:8px;">Bentornato, {{ profileNickname }}</div>
+              <div style="color: oklch(0.67 0 0); font-size:14px; font-weight:500; line-height:1.4;">Sessione già attiva: l'onboarding viene saltato e si entra direttamente nella tab Home.</div>
+            </div>
+          </sc-if>
+
+          <div style="{{ authFlowDisplay }}; height:100%; flex-direction:column;">
+            <div style="flex:1; overflow:auto; padding: 60px 24px 30px;">
+              <div style="text-align:center; margin-bottom:28px;">
+                <div style="color: oklch(0.97 0 0); font-size:26px; font-weight:800; letter-spacing:-0.3px; margin-bottom:6px;">MotoSetup</div>
+                <div style="color: oklch(0.67 0 0); font-size:13.5px; font-weight:600;">Setup, sessioni e consigli AI per la pista</div>
+              </div>
+
+              <sc-if value="{{ authIsPremiumOffer }}" hint-placeholder-val="{{ false }}">
+                <div style="color: oklch(0.97 0 0); font-size:18px; font-weight:800; text-align:center; margin-bottom:6px;">Account creato — passa a Premium?</div>
+                <div style="color: oklch(0.67 0 0); font-size:13.5px; font-weight:500; text-align:center; margin-bottom:20px; line-height:1.4;">Sblocca subito moto, consigli AI e run illimitati con un pagamento unico.</div>
+                <div style="display:flex; flex-direction:column; margin-bottom:20px;">
+                  <sc-for list="{{ planFeatures }}" as="f" hint-placeholder-count="3">
+                    <div style="display:flex; gap:12px; padding:10px 0; border-bottom: 1px solid oklch(0 0 0 / 0.3);">
+                      <div style="width:22px; height:22px; border-radius:50%; background: oklch(0.87 0.18 250 / 0.16); display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;">
+                        <svg width="11" height="11" viewBox="0 0 14 14"><path d="M2 7l3.5 3.5L12 3" fill="none" stroke="oklch(0.87 0.18 250)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                      </div>
+                      <div>
+                        <div style="color: oklch(0.97 0 0); font-size:14px; font-weight:700; margin-bottom:2px;">{{ f.label }}</div>
+                        <div style="color: oklch(0.67 0 0); font-size:12.5px; font-weight:500;">{{ f.premium }}</div>
+                      </div>
+                    </div>
+                  </sc-for>
+                </div>
+                <div onClick="{{ finishPremium }}" style="text-align:center; padding:15px; border-radius:14px; background:oklch(0.97 0 0); color:oklch(0.03 0 0); font-size:15px; font-weight:800; cursor:pointer; margin-bottom:12px;">Sblocca Premium — €9,99 una tantum</div>
+                <div onClick="{{ finishFree }}" style="text-align:center; padding:10px; color: oklch(0.67 0 0); font-size:14px; font-weight:700; cursor:pointer;">Continua con Free</div>
+              </sc-if>
+
+              <sc-if value="{{ authIsDone }}" hint-placeholder-val="{{ false }}">
+                <div style="text-align:center;">
+                  <div style="color: oklch(0.97 0 0); font-size:19px; font-weight:800; margin-bottom:8px;">Sei dentro!</div>
+                  <div style="color: oklch(0.67 0 0); font-size:14px; font-weight:500; line-height:1.4;">Vai alla tab Home per iniziare a usare MotoSetup.</div>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ authIsLogin }}" hint-placeholder-val="{{ true }}">
+                <div style="display:flex; gap:4px; padding:4px; border-radius:14px; background: oklch(0 0 0 / 0.35); margin-bottom:24px;">
+                  <div onClick="{{ selectLoginTab }}" style="flex:1; text-align:center; padding:11px; border-radius:11px; background: {{ loginTabBg }}; color: {{ loginTabFg }}; font-size:14px; font-weight:800; cursor:pointer;">Accedi</div>
+                  <div onClick="{{ selectRegisterTab }}" style="flex:1; text-align:center; padding:11px; border-radius:11px; background: {{ registerTabBg }}; color: {{ registerTabFg }}; font-size:14px; font-weight:800; cursor:pointer;">Registrati</div>
+                </div>
+
+                <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:18px;">
+                  <div onClick="{{ socialGoogle }}" style="display:flex; align-items:center; justify-content:center; gap:10px; padding:13px; border-radius:14px; background: oklch(0.97 0 0); color:oklch(0.03 0 0); font-size:14.5px; font-weight:700; cursor:pointer;">
+                    <div style="width:18px; height:18px; border-radius:50%; border:1.5px solid oklch(0.03 0 0 / 0.25); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800;">G</div>
+                    Continua con Google
+                  </div>
+                  <div onClick="{{ socialApple }}" style="display:flex; align-items:center; justify-content:center; gap:10px; padding:13px; border-radius:14px; background: oklch(0.03 0 0); border: 1px solid oklch(1 0 0 / 0.2); color:oklch(0.97 0 0); font-size:14.5px; font-weight:700; cursor:pointer;">
+                    <div style="width:18px; height:18px; border-radius:50%; border:1.5px solid oklch(1 0 0 / 0.3); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800;">A</div>
+                    Continua con Apple
+                  </div>
+                </div>
+                <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px;">
+                  <div style="flex:1; height:1px; background: oklch(1 0 0 / 0.15);"></div>
+                  <span style="color: oklch(0.67 0 0); font-size:12px; font-weight:600;">oppure</span>
+                  <div style="flex:1; height:1px; background: oklch(1 0 0 / 0.15);"></div>
+                </div>
+
+                <div style="color: oklch(0.67 0 0); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;">Email</div>
+                <input value="{{ loginDraft.email }}" onChange="{{ loginDraft.onEmailChange }}" style="width:100%; box-sizing:border-box; background: oklch(0 0 0 / 0.4); border: 1px solid oklch(1 0 0 / 0.2); border-radius:12px; padding:12px 12px; color: oklch(0.97 0 0); font-size:15px; font-weight:600; font-family:'Inter',sans-serif; margin-bottom:14px;">
+
+                <div style="color: oklch(0.67 0 0); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;">Password</div>
+                <input type="password" value="{{ loginDraft.password }}" onChange="{{ loginDraft.onPasswordChange }}" style="width:100%; box-sizing:border-box; background: oklch(0 0 0 / 0.4); border: 1px solid oklch(1 0 0 / 0.2); border-radius:12px; padding:12px 12px; color: oklch(0.97 0 0); font-size:15px; font-weight:600; font-family:'Inter',sans-serif; margin-bottom:22px;">
+
+                <div onClick="{{ submitLogin }}" style="text-align:center; padding:15px; border-radius:14px; background:oklch(0.97 0 0); color:oklch(0.03 0 0); font-size:15px; font-weight:800; cursor:pointer; margin-bottom:14px;">Accedi</div>
+                <div onClick="{{ selectRegisterTab }}" style="text-align:center; color: oklch(0.67 0 0); font-size:13.5px; font-weight:600;">Non hai un account? <span style="color: oklch(0.87 0.18 250); font-weight:700; cursor:pointer;">Registrati</span></div>
+              </sc-if>
+
+              <sc-if value="{{ authIsRegister }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex; gap:4px; padding:4px; border-radius:14px; background: oklch(0 0 0 / 0.35); margin-bottom:24px;">
+                  <div onClick="{{ selectLoginTab }}" style="flex:1; text-align:center; padding:11px; border-radius:11px; background: {{ loginTabBg }}; color: {{ loginTabFg }}; font-size:14px; font-weight:800; cursor:pointer;">Accedi</div>
+                  <div onClick="{{ selectRegisterTab }}" style="flex:1; text-align:center; padding:11px; border-radius:11px; background: {{ registerTabBg }}; color: {{ registerTabFg }}; font-size:14px; font-weight:800; cursor:pointer;">Registrati</div>
+                </div>
+
+                <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:18px;">
+                  <div onClick="{{ socialGoogle }}" style="display:flex; align-items:center; justify-content:center; gap:10px; padding:13px; border-radius:14px; background: oklch(0.97 0 0); color:oklch(0.03 0 0); font-size:14.5px; font-weight:700; cursor:pointer;">
+                    <div style="width:18px; height:18px; border-radius:50%; border:1.5px solid oklch(0.03 0 0 / 0.25); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800;">G</div>
+                    Continua con Google
+                  </div>
+                  <div onClick="{{ socialApple }}" style="display:flex; align-items:center; justify-content:center; gap:10px; padding:13px; border-radius:14px; background: oklch(0.03 0 0); border: 1px solid oklch(1 0 0 / 0.2); color:oklch(0.97 0 0); font-size:14.5px; font-weight:700; cursor:pointer;">
+                    <div style="width:18px; height:18px; border-radius:50%; border:1.5px solid oklch(1 0 0 / 0.3); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800;">A</div>
+                    Continua con Apple
+                  </div>
+                </div>
+                <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px;">
+                  <div style="flex:1; height:1px; background: oklch(1 0 0 / 0.15);"></div>
+                  <span style="color: oklch(0.67 0 0); font-size:12px; font-weight:600;">oppure</span>
+                  <div style="flex:1; height:1px; background: oklch(1 0 0 / 0.15);"></div>
+                </div>
+
+                <div style="color: oklch(0.67 0 0); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;">Nickname</div>
+                <input value="{{ registerDraft.nickname }}" onChange="{{ registerDraft.onNicknameChange }}" style="width:100%; box-sizing:border-box; background: oklch(0 0 0 / 0.4); border: 1px solid oklch(1 0 0 / 0.2); border-radius:12px; padding:12px 12px; color: oklch(0.97 0 0); font-size:15px; font-weight:600; font-family:'Inter',sans-serif; margin-bottom:14px;">
+
+                <div style="color: oklch(0.67 0 0); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;">Email</div>
+                <input value="{{ registerDraft.email }}" onChange="{{ registerDraft.onEmailChange }}" style="width:100%; box-sizing:border-box; background: oklch(0 0 0 / 0.4); border: 1px solid oklch(1 0 0 / 0.2); border-radius:12px; padding:12px 12px; color: oklch(0.97 0 0); font-size:15px; font-weight:600; font-family:'Inter',sans-serif; margin-bottom:14px;">
+
+                <div style="color: oklch(0.67 0 0); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;">Password</div>
+                <input type="password" value="{{ registerDraft.password }}" onChange="{{ registerDraft.onPasswordChange }}" style="width:100%; box-sizing:border-box; background: oklch(0 0 0 / 0.4); border: 1px solid oklch(1 0 0 / 0.2); border-radius:12px; padding:12px 12px; color: oklch(0.97 0 0); font-size:15px; font-weight:600; font-family:'Inter',sans-serif; margin-bottom:14px;">
+
+                <div style="color: oklch(0.67 0 0); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;">Conferma password</div>
+                <input type="password" value="{{ registerDraft.confirm }}" onChange="{{ registerDraft.onConfirmChange }}" style="width:100%; box-sizing:border-box; background: oklch(0 0 0 / 0.4); border: 1px solid oklch(1 0 0 / 0.2); border-radius:12px; padding:12px 12px; color: oklch(0.97 0 0); font-size:15px; font-weight:600; font-family:'Inter',sans-serif; margin-bottom:22px;">
+
+                <div onClick="{{ submitRegister }}" style="text-align:center; padding:15px; border-radius:14px; background:oklch(0.97 0 0); color:oklch(0.03 0 0); font-size:15px; font-weight:800; cursor:pointer;">Crea account</div>
+              </sc-if>
+            </div>
+          </div>
+        </div>
+      </x-import>
+    </div>
+
+    <!-- Home -->
+    <div data-screen-label="Home">
+      <div style="color:#8a8a8a; font-size:12px; font-weight:600; margin-bottom:10px; text-transform:uppercase; letter-spacing:0.5px;">Home — ultima sessione, checklist, garage moto</div>
+      <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" dark="{{true}}" width="{{380}}" height="{{823}}" hint-size="380,823">
+        <div style="height:100%; display:flex; flex-direction:column; background: oklch(0.173 0 0); font-family:'Inter',sans-serif; position:relative; overflow:hidden;">
+
+          <sc-if value="{{ homeIsList }}" hint-placeholder-val="{{ true }}">
+            <div style="height:100%; display:flex; flex-direction:column; {{ homeListTransformStyle }}">
+              <div style="padding: 68px 20px 0;">
+                <div style="color: oklch(0.97 0 0); font-size:26px; font-weight:800; letter-spacing:-0.3px; text-align:center;">Home</div>
+              </div>
+
+              <div style="padding: 14px 20px 0;">
+                <div onClick="{{ openRunDetail }}" style="padding: 16px 18px; position: relative; cursor: pointer;">
+                  <div style="font-size: 10.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 7px; color: oklch(0.67 0 0)">Ultima sessione</div>
+                  <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+                    <div>
+                      <div style="color: oklch(0.97 0 0); font-size:19px; font-weight:800; margin-bottom:2px;">{{ lastSession.track }}</div>
+                      <div style="color: oklch(0.67 0 0); font-size:12.5px; font-weight:600;">{{ lastSession.bike }}</div>
+                    </div>
+                    <div style="text-align:right;">
+                      <div style="color: {{ lastSession.color }}; font-size:18px; font-weight:800; font-variant-numeric:tabular-nums;">{{ lastSession.bestLap }}</div>
+                      <div style="color: oklch(0.67 0 0); font-size:11px; font-weight:600;">best lap</div>
+                    </div>
+                  </div>
+                  <div style="display:flex; align-items:center; gap:6px; margin-top:10px;">
+                    <sc-if value="{{ lastSession.isSun }}" hint-placeholder-val="{{ true }}">
+                      <svg width="18" height="18" viewBox="0 0 40 40">
+                        <circle cx="20" cy="20" r="8" fill="oklch(0.67 0 0)"></circle>
+                        <g stroke="oklch(0.67 0 0)" stroke-width="2.4" stroke-linecap="round">
+                          <line x1="20" y1="3" x2="20" y2="8"></line><line x1="20" y1="32" x2="20" y2="37"></line>
+                          <line x1="3" y1="20" x2="8" y2="20"></line><line x1="32" y1="20" x2="37" y2="20"></line>
+                          <line x1="7.5" y1="7.5" x2="11" y2="11"></line><line x1="29" y1="29" x2="32.5" y2="32.5"></line>
+                          <line x1="32.5" y1="7.5" x2="29" y2="11"></line><line x1="11" y1="29" x2="7.5" y2="32.5"></line>
+                        </g>
+                      </svg>
+                    </sc-if>
+                    <sc-if value="{{ lastSession.isClouds }}" hint-placeholder-val="{{ false }}">
+                      <svg width="18" height="18" viewBox="0 0 40 40">
+                        <path d="M11 26a6 6 0 0 1 -1-11.9 8 8 0 0 1 15.4-2.6 6.5 6.5 0 0 1 -1.4 14.5Z" fill="oklch(0.67 0 0)"></path>
+                      </svg>
+                    </sc-if>
+                    <sc-if value="{{ lastSession.isRain }}" hint-placeholder-val="{{ false }}">
+                      <svg width="18" height="18" viewBox="0 0 40 40">
+                        <path d="M11 22a6 6 0 0 1 -1-11.9 8 8 0 0 1 15.4-2.6 6.5 6.5 0 0 1 -1.4 14.5Z" fill="oklch(0.67 0 0)"></path>
+                        <g stroke="oklch(0.67 0 0)" stroke-width="2.6" stroke-linecap="round">
+                          <line x1="14" y1="28" x2="12" y2="34"></line>
+                          <line x1="20" y1="28" x2="18" y2="34"></line>
+                          <line x1="26" y1="28" x2="24" y2="34"></line>
+                        </g>
+                      </svg>
+                    </sc-if>
+                    <span style="color: oklch(0.67 0 0); font-size:12.5px; font-weight:700;">{{ lastSession.temp }}</span>
+                    <span style="color: oklch(0.67 0 0); font-size:12.5px; font-weight:600;">· {{ lastSession.weatherLabel }}</span>
+                  </div>
+                  <svg width="8" height="14" viewBox="0 0 8 14" style="position:absolute; right:0; bottom:16px;"><path d="M1 1l6 6-6 6" fill="none" stroke="oklch(0.67 0 0)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                </div>
+              </div>
+
+              <div style="padding: 10px 20px 0;">
+                <div onClick="{{ openChecklist }}" style="display: flex; align-items: center; justify-content: space-between; border-radius: 18px; padding: 14px 16px; border: 1px solid oklch(1 0 0 / 0.24); backdrop-filter: blur(26px) saturate(180%); -webkit-backdrop-filter: blur(26px) saturate(180%); box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.32), 0 6px 18px oklch(0 0 0 / 0.3); cursor: pointer">
+                  <div style="display:flex; align-items:center; gap:10px;">
+                    <svg width="18" height="18" viewBox="0 0 20 20"><path d="M4 6h12M4 10h12M4 14h8" stroke="oklch(0.67 0 0)" stroke-width="1.8" stroke-linecap="round"></path></svg>
+                    <span style="color: oklch(0.97 0 0); font-size:14.5px; font-weight:700;">Checklist pista</span>
+                  </div>
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="color: oklch(0.97 0 0); font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums">{{ checklistDoneCount }}/{{ checklistTotalCount }}</span>
+                    <svg width="8" height="14" viewBox="0 0 8 14"><path d="M1 1l6 6-6 6" fill="none" stroke="oklch(0.67 0 0)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                  </div>
+                </div>
+              </div>
+
+              <div style="flex: 1; min-height: 0; overflow-x: auto; overflow-y: hidden; display: flex; gap: 12px; padding: 14px 20px 100px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch">
+                <sc-for list="{{ homeCards }}" as="bike" hint-placeholder-count="2">
+                  <div onClick="{{ bike.onClick }}" style="flex:0 0 304px; scroll-snap-align:start; border-radius:18px; padding:6px; background: {{ bike.cardColor }}; cursor:pointer; display:flex; transition: transform 0.25s ease, box-shadow 0.25s ease;" style-hover="transform: translateY(-3px); box-shadow: 0 14px 30px oklch(0 0 0 / 0.45);">
+                    <div style="border-radius:13px; background:{{ bike.bodyBg }}; overflow:hidden; display:flex; flex-direction:column; position:relative; flex:1; min-width:0;">
+                      <div style="position:absolute; inset:0; z-index:6; pointer-events:none; mix-blend-mode:overlay; opacity:0.85; background-size:250% 250%; background-position: 0% 0%; background-image: linear-gradient(115deg, transparent 25%, oklch(0.72 0.19 300 / 0.5) 33%, oklch(0.87 0.18 250 / 0.5) 41%, oklch(0.78 0.15 70 / 0.45) 49%, transparent 60%); transition: background-position 1.1s ease;" style-hover="background-position: 100% 100%;"></div>
+                      <div style="display:flex; align-items:center; justify-content:space-between; padding:9px 12px; background: {{ bike.cardColor }}; border-radius:13px 13px 0 0;">
+                        <div style="color:oklch(0.03 0 0); font-size:15px; font-weight:800; letter-spacing:-0.2px; text-transform:uppercase;">{{ bike.name }}</div>
+                        <div style="display:flex; align-items:center; gap:3px; flex-shrink:0;">
+                          <sc-for list="{{ bike.rarityDots }}" as="dot" hint-placeholder-count="2">
+                            <div style="width:7px; height:7px; transform: rotate(45deg); background:oklch(0.03 0 0);"></div>
+                          </sc-for>
+                        </div>
+                      </div>
+                      <div style="width:100%; aspect-ratio: 16 / 9; flex-shrink:0; position:relative; border-bottom: 2px solid {{ bike.cardColor }};">
+                        <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background: oklch(1 0 0 / 0.05);">
+                          <svg width="56" height="56" viewBox="0 0 24 24" fill="none"><path d="M5 17a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5Zm14 0a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5Z" stroke="oklch(0.97 0 0)" stroke-width="1.4"></path><path d="M5 14.5 9 9h4l2 2.5h3.5M9 9 8 7H6M12 9l2 4.5M15 14.5h-3" stroke="oklch(0.97 0 0)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                        </div>
+                        <div style="position:absolute; top:8px; right:8px; display:flex; gap:6px; z-index:2;">
+                          <div onClick="{{ bike.onEdit }}" style="width:26px; height:26px; border-radius:50%; background: oklch(0 0 0 / 0.5); backdrop-filter: blur(6px); display:flex; align-items:center; justify-content:center; cursor:pointer;">
+                            <svg width="12" height="12" viewBox="0 0 20 20"><path d="M14.5 2.5 L17.5 5.5 L7 16 L3 17 L4 13 Z" fill="none" stroke="oklch(0.97 0 0)" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"></path></svg>
+                          </div>
+                          <div onClick="{{ bike.onDelete }}" style="width:26px; height:26px; border-radius:50%; background: oklch(0 0 0 / 0.5); backdrop-filter: blur(6px); display:flex; align-items:center; justify-content:center; cursor:pointer;">
+                            <svg width="12" height="12" viewBox="0 0 20 20"><path d="M4 6 H16 M8 6 V4 H12 V6 M6 6 L6.8 17 H13.2 L14 6" fill="none" stroke="oklch(0.63 0.255 25)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                          </div>
+                        </div>
+                      </div>
+                      <div style="padding: 12px 14px; display: flex; flex-direction: column; flex: 1; min-height: 0">
+                        <div style="color: oklch(0.67 0 0); font-size:12px; font-weight:600; margin-bottom:10px;">{{ bike.subtitle }}</div>
+                        <div style="color: oklch(0.67 0 0); font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:7px;">Manutenzione</div>
+                        <div style="display:flex; flex-direction:column; gap:6px; flex:1; min-height:0; overflow-y:auto; justify-content:flex-start;">
+                          <sc-for list="{{ bike.allMaint }}" as="m" hint-placeholder-count="4">
+                            <div style="display:flex; align-items:center; gap:8px; padding: 1px 0;">
+                              <div style="flex:1; min-width:0; color: oklch(0.97 0 0); font-size:12.5px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ m.name }}</div>
+                              <div style="color: {{ m.color }}; font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.3px; flex-shrink:0;">{{ m.status }}</div>
+                            </div>
+                          </sc-for>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </sc-for>
+
+                <div onClick="{{ addBikeClick }}" style="flex:0 0 304px; scroll-snap-align:start; border-radius:16px; border: 1.5px dashed oklch(1 0 0 / 0.22); background: oklch(0 0 0 / 0.22); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; cursor:pointer;">
+                  <div style="width:42px; height:42px; border-radius:50%; border: 1.5px solid oklch(1 0 0 / 0.3); display:flex; align-items:center; justify-content:center;">
+                    <svg width="18" height="18" viewBox="0 0 20 20"><path d="M10 3v14M3 10h14" stroke="oklch(0.97 0 0)" stroke-width="2" stroke-linecap="round"></path></svg>
+                  </div>
+                  <div style="color: oklch(0.97 0 0); font-size:14px; font-weight:700;">Aggiungi nuova moto</div>
+                  <div style="color: oklch(0.67 0 0); font-size:12px; font-weight:600;">{{ bikeLimitCaption }}</div>
+                </div>
+              </div>
+
+              <div style="{{ navHome.barStyle }}" onMouseDown="{{ navHome.press }}" onMouseUp="{{ navHome.release }}" onMouseLeave="{{ navHome.release }}" onTouchStart="{{ navHome.press }}" onTouchEnd="{{ navHome.release }}">
+                <div style="position:relative; display:flex;">
+                  <div style="{{ navHome.pillStyle }}"></div>
+                  <div onClick="{{ navHome.select0 }}" style="flex:1; position:relative; z-index:2; display:flex; align-items:center; justify-content:center; padding:8px 0; cursor:pointer;">
+                    <svg width="26" height="26" viewBox="0 0 22 22" style="display:block;"><path d="M3 10 L11 3 L19 10" fill="none" stroke="{{ navHome.color0 }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path><rect x="5" y="10" width="12" height="9" rx="1.5" fill="none" stroke="{{ navHome.color0 }}" stroke-width="2"></rect></svg>
+                  </div>
+                  <div onClick="{{ navHome.select1 }}" style="flex:1; position:relative; z-index:2; display:flex; align-items:center; justify-content:center; padding:8px 0; cursor:pointer;">
+                    <svg width="26" height="26" viewBox="0 0 22 22" style="display:block;"><circle cx="11" cy="11" r="8.5" fill="none" stroke="{{ navHome.color1 }}" stroke-width="2"></circle><line x1="11" y1="11" x2="15" y2="7" stroke="{{ navHome.color1 }}" stroke-width="2" stroke-linecap="round"></line></svg>
+                  </div>
+                  <div onClick="{{ navHome.select2 }}" style="flex:1; position:relative; z-index:2; display:flex; align-items:center; justify-content:center; padding:8px 0; cursor:pointer;">
+                    <svg width="26" height="26" viewBox="0 0 22 22" style="display:block;"><rect x="2" y="4" width="18" height="12" rx="5" fill="none" stroke="{{ navHome.color2 }}" stroke-width="2"></rect><path d="M7 16 L5 20 L10 16Z" fill="{{ navHome.color2 }}"></path></svg>
+                  </div>
+                  <div onClick="{{ navHome.select3 }}" style="flex:1; position:relative; z-index:2; display:flex; align-items:center; justify-content:center; padding:8px 0; cursor:pointer;">
+                    <svg width="26" height="26" viewBox="0 0 22 22" style="display:block;"><circle cx="11" cy="8" r="4" fill="none" stroke="{{ navHome.color3 }}" stroke-width="2"></circle><path d="M4 19c1.5-4 5-5 7-5s5.5 1 7 5" fill="none" stroke="{{ navHome.color3 }}" stroke-width="2" stroke-linecap="round"></path></svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <sc-if value="{{ checklistOpen }}" hint-placeholder-val="{{ false }}">
+              <div style="position:absolute; inset:0; z-index:40; background: oklch(0 0 0 / 0.82); backdrop-filter: blur(32px) saturate(180%); -webkit-backdrop-filter: blur(32px) saturate(180%); display:flex; flex-direction:column; animation: fadeZoomIn 0.28s ease forwards;">
+                <div style="padding: 68px 20px 14px; display:flex; align-items:center; justify-content:space-between;">
+                  <div style="color: oklch(0.97 0 0); font-size:20px; font-weight:800; letter-spacing:-0.2px;">Checklist pista</div>
+                  <div onClick="{{ closeChecklist }}" style="width:34px; height:34px; border-radius:50%; background: oklch(1 0 0 / 0.1); border: 1px solid oklch(1 0 0 / 0.2); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.32);">
+                    <svg width="14" height="14" viewBox="0 0 14 14"><path d="M1 1l12 12M13 1L1 13" stroke="oklch(0.97 0 0)" stroke-width="1.8" stroke-linecap="round"></path></svg>
+                  </div>
+                </div>
+                <div style="flex:1; overflow:auto; padding: 0 20px;">
+                  <sc-for list="{{ checklistItems }}" as="it" hint-placeholder-count="6">
+                    <div style="display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom: 1px solid oklch(0 0 0 / 0.5);">
+                      <div onClick="{{ it.onToggle }}" style="width:24px; height:24px; border-radius:9px; border: 1.5px solid {{ it.boxBorder }}; background: {{ it.boxBg }}; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;">
+                        <sc-if value="{{ it.checked }}" hint-placeholder-val="{{ false }}">
+                          <svg width="13" height="13" viewBox="0 0 14 14"><path d="M2 7l3.5 3.5L12 3" fill="none" stroke="oklch(0.97 0 0)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                        </sc-if>
+                      </div>
+                      <div onClick="{{ it.onToggle }}" style="flex:1; min-width:0; color: {{ it.textColor }}; font-size:15px; font-weight:600; text-decoration: {{ it.textDecoration }}; cursor:pointer;">{{ it.label }}</div>
+                      <div onClick="{{ it.onDelete }}" style="width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;">
+                        <svg width="13" height="13" viewBox="0 0 14 14"><path d="M1 1l12 12M13 1L1 13" stroke="oklch(0.67 0 0)" stroke-width="1.6" stroke-linecap="round"></path></svg>
+                      </div>
+                    </div>
+                  </sc-for>
+                </div>
+                <div style="padding: 14px 20px 34px;">
+                  <div onClick="{{ addChecklistItem }}" style="text-align:center; padding:14px; border-radius:16px; border: 1px dashed oklch(1 0 0 / 0.28); background: oklch(1 0 0 / 0.1); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); color: oklch(0.97 0 0); font-size:14px; font-weight:700; cursor:pointer;">+ Aggiungi voce</div>
+                </div>
+              </div>
+            </sc-if>
+          </sc-if>
+
+          <sc-if value="{{ runDetailOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute; inset:0; z-index:60; background:oklch(0.173 0 0); animation: runDetailSlideIn 0.2s cubic-bezier(.2,.8,.2,1) forwards;">
+              <div onClick="{{ closeRunDetail }}" style="position: absolute; top: 72px; left: 20px; z-index: 30; width: 44px; height: 44px; border-radius: 50%; background: oklch(0 0 0 / 0.4); backdrop-filter: blur(28px) saturate(200%); -webkit-backdrop-filter: blur(28px) saturate(200%); border: 1px solid oklch(1 0 0 / 0.24); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.3), 0 8px 22px oklch(0 0 0 / 0.4)">
+                <svg width="20" height="20" viewBox="0 0 20 20"><path d="M13 3 L6 10 L13 17" fill="none" stroke="oklch(0.97 0 0)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+              </div>
+              <div style="flex: 1; overflow: auto; padding: 70px 20px 20px; position: relative">
+                <div style="text-align:center; margin-bottom:18px;">
+                  <div onClick="{{ runWeatherNext }}" style="display:flex; align-items:center; justify-content:center; gap:5px; cursor:pointer;">
+                    <span style="color: oklch(0.67 0 0); font-size:13px; font-weight:600;">Oggi ·</span>
+                    <sc-if value="{{ runWeatherIsSun }}" hint-placeholder-val="{{ true }}">
+                      <svg width="15" height="15" viewBox="0 0 40 40">
+                        <circle cx="20" cy="20" r="8" fill="oklch(0.67 0 0)"></circle>
+                        <g stroke="oklch(0.67 0 0)" stroke-width="2.4" stroke-linecap="round">
+                          <line x1="20" y1="3" x2="20" y2="8"></line><line x1="20" y1="32" x2="20" y2="37"></line>
+                          <line x1="3" y1="20" x2="8" y2="20"></line><line x1="32" y1="20" x2="37" y2="20"></line>
+                          <line x1="7.5" y1="7.5" x2="11" y2="11"></line><line x1="29" y1="29" x2="32.5" y2="32.5"></line>
+                          <line x1="32.5" y1="7.5" x2="29" y2="11"></line><line x1="11" y1="29" x2="7.5" y2="32.5"></line>
+                        </g>
+                      </svg>
+                    </sc-if>
+                    <sc-if value="{{ runWeatherIsClouds }}" hint-placeholder-val="{{ false }}">
+                      <svg width="15" height="15" viewBox="0 0 40 40">
+                        <path d="M11 26a6 6 0 0 1 -1-11.9 8 8 0 0 1 15.4-2.6 6.5 6.5 0 0 1 -1.4 14.5Z" fill="oklch(0.67 0 0)"></path>
+                      </svg>
+                    </sc-if>
+                    <sc-if value="{{ runWeatherIsRain }}" hint-placeholder-val="{{ false }}">
+                      <svg width="15" height="15" viewBox="0 0 40 40">
+                        <path d="M11 22a6 6 0 0 1 -1-11.9 8 8 0 0 1 15.4-2.6 6.5 6.5 0 0 1 -1.4 14.5Z" fill="oklch(0.67 0 0)"></path>
+                        <g stroke="oklch(0.67 0 0)" stroke-width="2.6" stroke-linecap="round">
+                          <line x1="14" y1="28" x2="12" y2="34"></line>
+                          <line x1="20" y1="28" x2="18" y2="34"></line>
+                          <line x1="26" y1="28" x2="24" y2="34"></line>
+                        </g>
+                      </svg>
+                    </sc-if>
+                    <span style="color: oklch(0.67 0 0); font-size:13px; font-weight:600;">{{ runWeatherLabel }}</span>
+                  </div>
+                  <div style="color: oklch(0.97 0 0); font-size:25px; font-weight:800; letter-spacing:-0.3px;">Mugello</div>
+                </div>
+
+                <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:20px;">
+                  <div onClick="{{ runPrev }}" style="width:36px; height:36px; border-radius:50%; background: transparent; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;">
+                    <svg width="16" height="16" viewBox="0 0 16 16"><path d="M10 2 L4 8 L10 14" fill="none" stroke="oklch(0.97 0 0)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                  </div>
+                  <sc-if value="{{ runIsAdd }}" hint-placeholder-val="{{ false }}">
+                    <div style="flex: 1; min-width: 0; color: oklch(0.87 0.18 250); font-size: 16px; font-weight: 700; text-align: center">+ Nuovo run</div>
+                  </sc-if>
+                  <sc-if value="{{ runIsNotAdd }}" hint-placeholder-val="{{ true }}">
+                    <div style="flex:1; min-width:0; color: oklch(0.97 0 0); font-size:20px; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; text-align:center;">{{ runName }}</div>
+                  </sc-if>
+                  <div onClick="{{ runNext }}" style="width:36px; height:36px; border-radius:50%; background: transparent; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;">
+                    <svg width="16" height="16" viewBox="0 0 16 16"><path d="M6 2 L12 8 L6 14" fill="none" stroke="oklch(0.97 0 0)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                  </div>
+                </div>
+
+                <div style="padding: 6px 0; margin-bottom: 16px;">
+                  <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px 10px;">
+                    <div onClick="{{ oraOpen }}" style="cursor:pointer; text-align:center;">
+                      <div style="color: oklch(0.67 0 0); font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.4px; margin-bottom:5px;">Ora</div>
+                      <div style="color: oklch(0.97 0 0); font-size:21px; font-weight:800; font-variant-numeric: tabular-nums;">{{ generale.ora }}</div>
+                    </div>
+                    <div onClick="{{ temperaturaOpen }}" style="cursor:pointer; text-align:center;">
+                      <div style="color: oklch(0.67 0 0); font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.4px; margin-bottom:5px;">Temperatura</div>
+                      <div style="color: oklch(0.97 0 0); font-size:21px; font-weight:800; font-variant-numeric: tabular-nums;">{{ generale.temperatura }}</div>
+                    </div>
+                    <div onClick="{{ bestLapOpen }}" style="cursor:pointer; text-align:center;">
+                      <div style="color: oklch(0.67 0 0); font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.4px; margin-bottom:5px;">Best lap</div>
+                      <div style="color: {{ generale.bestLapColor }}; font-size:21px; font-weight:800; font-variant-numeric: tabular-nums;">{{ generale.bestLap }}</div>
+                    </div>
+                    <div onClick="{{ giriOpen }}" style="cursor:pointer; text-align:center;">
+                      <div style="color: oklch(0.67 0 0); font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.4px; margin-bottom:5px;">Giri</div>
+                      <div style="color: oklch(0.97 0 0); font-size:21px; font-weight:800; font-variant-numeric: tabular-nums;">{{ generale.giri }}</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div onMouseDown="{{ catBar.press }}" onMouseUp="{{ catBar.release }}" onMouseLeave="{{ catBar.release }}" onTouchStart="{{ catBar.press }}" onTouchEnd="{{ catBar.release }}" style="{{ catBar.barStyle }}">
+                  <div style="position:relative; display:flex;">
+                    <div style="{{ catBar.pillStyle }}"></div>
+                    <sc-for list="{{ categories }}" as="cat" hint-placeholder-count="4">
+                      <div onClick="{{ cat.onClick }}" style="flex:1; position:relative; z-index:2; display:flex; align-items:center; justify-content:center; padding:8px 0; cursor:pointer;">
+                        <div style="{{ cat.iconStyle }}"></div>
+                      </div>
+                    </sc-for>
+                  </div>
+                </div>
+
+                <sc-if value="{{ hasSubs }}" hint-placeholder-val="{{ true }}">
+                  <div style="display:flex; gap:8px; margin-bottom:18px;">
+                    <sc-for list="{{ subTabs }}" as="sub" hint-placeholder-count="2">
+                      <div onClick="{{ sub.onClick }}" style="flex: 1; text-align: center; padding: 10px; border-radius: 13px; background: {{ sub.bg }}; border: {{ sub.border }}; backdrop-filter: blur(22px) saturate(180%); -webkit-backdrop-filter: blur(22px) saturate(180%); color: {{ sub.fg }}; font-size: 13.5px; font-weight: 700; cursor: pointer">{{ sub.name }}</div>
+                    </sc-for>
+                  </div>
+                </sc-if>
+
+                <div style="background: transparent; padding:0;">
+                  <div style="display:flex; flex-direction:column; margin-bottom:20px;">
+                    <sc-for list="{{ activeFields }}" as="f" hint-placeholder-count="4">
+                      <div style="padding:14px 0; border-bottom: 1px solid oklch(0 0 0 / 0.35);">
+                        <sc-if value="{{ f.isStepper }}" hint-placeholder-val="{{ false }}">
+                          <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+                            <div style="color: oklch(0.67 0 0); font-size:14px; font-weight:600;">{{ f.label }}</div>
+                            <div style="display:flex; align-items:center; gap:14px;">
+                              <div onClick="{{ f.onDec }}" style="width:34px; height:34px; border-radius:50%; background: oklch(0 0 0 / 0.35); border: 1px solid oklch(1 0 0 / 0.24); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); display:flex; align-items:center; justify-content:center; color: oklch(0.97 0 0); font-size:19px; font-weight:700; cursor:pointer; user-select:none; box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.32);">–</div>
+                              <div style="min-width:78px; text-align:center; color: oklch(0.97 0 0); font-size:16px; font-weight:700; font-variant-numeric: tabular-nums;">{{ f.value }}</div>
+                              <div onClick="{{ f.onInc }}" style="width: 34px; height: 34px; border-radius: 50%; border: none; backdrop-filter: blur(20px) saturate(200%); -webkit-backdrop-filter: blur(20px) saturate(200%); display: flex; align-items: center; justify-content: center; cursor: pointer; user-select: none; box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.45); background-color: oklch(0.97 0 0)"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M7 1v12M1 7h12" stroke="oklch(0.03 0 0)" stroke-width="2" stroke-linecap="round"></path></svg></div>
+                            </div>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ f.isText }}" hint-placeholder-val="{{ true }}">
+                          <div>
+                            <div style="color: oklch(0.67 0 0); font-size:12px; font-weight:600; margin-bottom:6px;">{{ f.label }}</div>
+                            <input value="{{ f.value }}" style="width:100%; box-sizing:border-box; background: oklch(0 0 0 / 0.3); border: 1px solid oklch(1 0 0 / 0.24); border-radius:12px; padding:10px 12px; color: oklch(0.97 0 0); font-size:16px; font-weight:700; font-family:'Inter',sans-serif; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);">
+                          </div>
+                        </sc-if>
+                      </div>
+                    </sc-for>
+                  </div>
+
+                  <div style="color: oklch(0.67 0 0); font-size:12px; font-weight:600; margin-bottom:8px;">Note</div>
+                  <textarea defaultValue="{{ activeNoteValue }}" style="width:100%; box-sizing:border-box; min-height:90px; background: oklch(0 0 0 / 0.3); border: 1px solid oklch(1 0 0 / 0.24); border-radius:14px; padding:12px; color: oklch(0.97 0 0); font-size:15px; font-weight:500; line-height:1.5; font-family:'Inter',sans-serif; resize:none; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);"></textarea>
+                </div>
+              </div>
+
+              <sc-if value="{{ pickerOpen }}" hint-placeholder-val="{{ false }}">
+                <div style="position:absolute; inset:0; z-index:60; background: oklch(0 0 0 / 0.55); display:flex; align-items:flex-end;">
+                  <div style="width:100%; background: oklch(0 0 0 / 0.5); backdrop-filter: blur(32px) saturate(200%); -webkit-backdrop-filter: blur(32px) saturate(200%); border-radius:26px 26px 0 0; padding-bottom: 30px; border-top: 1px solid oklch(1 0 0 / 0.18); box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.2), 0 -10px 30px oklch(0 0 0 / 0.4);">
+                    <div style="display:flex; align-items:center; justify-content:space-between; padding: 14px 16px; border-bottom: 1px solid oklch(0 0 0 / 0.5);">
+                      <div onClick="{{ closePicker }}" style="color: oklch(0.67 0 0); font-size:15px; font-weight:600; cursor:pointer; padding:6px 4px;">Annulla</div>
+                      <div style="color: oklch(0.97 0 0); font-size:15px; font-weight:700;">{{ pickerTitle }}</div>
+                      <div onClick="{{ confirmPicker }}" style="color: oklch(0.97 0 0); font-size:15px; font-weight:700; cursor:pointer; padding:6px 4px;">Fatto</div>
+                    </div>
+                    <div style="position:relative; height:200px; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+                      <div style="position:absolute; top:80px; left:16px; right:16px; height:40px; border-top: 1px solid oklch(0 0 0 / 0.6); border-bottom: 1px solid oklch(0 0 0 / 0.6); pointer-events:none;"></div>
+                      <div style="display:flex; align-items:center; justify-content:center; gap:2px;">
+                        <sc-for list="{{ pickerColumns }}" as="col" hint-placeholder-count="2">
+                          <div style="display:flex; align-items:center;">
+                            <sc-if value="{{ col.hasSep }}" hint-placeholder-val="{{ false }}">
+                              <div style="color: oklch(0.97 0 0); font-size:20px; font-weight:700; padding: 0 2px;">{{ col.sep }}</div>
+                            </sc-if>
+                            <div ref="{{ col.refCb }}" onScroll="{{ col.onScroll }}" style="height:200px; width:64px; overflow-y:auto; scroll-snap-type: y mandatory; -webkit-overflow-scrolling:touch;">
+                              <div style="height:80px;"></div>
+                              <sc-for list="{{ col.items }}" as="it" hint-placeholder-count="6">
+                                <div style="height:40px; line-height:40px; text-align:center; scroll-snap-align:center; font-size:20px; font-variant-numeric: tabular-nums; color: {{ it.color }}; font-weight: {{ it.weight }};">{{ it.label }}</div>
+                              </sc-for>
+                              <div style="height:80px;"></div>
+                            </div>
+                          </div>
+                        </sc-for>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </sc-if>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ homeIsDetail }}" hint-placeholder-val="{{ false }}">
+            <div style="height:100%; position:relative; animation: fadeZoomIn 0.28s ease forwards;">
+              <div onClick="{{ backToHome }}" style="position: absolute; top: 72px; left: 20px; z-index: 30; width: 44px; height: 44px; border-radius: 50%; background: oklch(0 0 0 / 0.4); backdrop-filter: blur(28px) saturate(200%); -webkit-backdrop-filter: blur(28px) saturate(200%); border: 1px solid oklch(1 0 0 / 0.24); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.3), 0 8px 22px oklch(0 0 0 / 0.4)">
+                <svg width="20" height="20" viewBox="0 0 20 20"><path d="M13 3 L6 10 L13 17" fill="none" stroke="oklch(0.97 0 0)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+              </div>
+              
+              <div style="height:100%; overflow:auto; padding: 78px 20px 40px; box-sizing:border-box;">
+                <div style="color: oklch(0.97 0 0); font-size:29px; font-weight:800; margin-bottom:4px; letter-spacing:-0.3px; text-align:center;">Manutenzione</div>
+                <div style="color: oklch(0.67 0 0); font-size:14px; font-weight:600; margin-bottom:20px; text-align:center;">{{ selectedBikeName }}</div>
+
+                <sc-for list="{{ selectedBikeMaint }}" as="m" hint-placeholder-count="4">
+                  <div style="padding:16px 0; border-bottom: 1px solid oklch(0 0 0 / 0.35);">
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+                      <div style="color: oklch(0.97 0 0); font-size:16px; font-weight:700;">{{ m.name }}</div>
+                      <div style="color: {{ m.color }}; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.3px;">{{ m.status }}</div>
+                    </div>
+                    <div style="color: oklch(0.67 0 0); font-size:13px; font-weight:500; margin-bottom:12px;">Ultimo: {{ m.last }} giorni fa · <span onClick="{{ m.onEditInterval }}" style="color: oklch(0.87 0.18 250); font-weight:700; cursor:pointer; text-decoration: underline; text-decoration-color: oklch(0.87 0.18 250 / 0.4);">ogni {{ m.intervalDays }} giorni</span></div>
+                    <div style="display:flex; gap:8px;">
+                      <div onClick="{{ m.onMarkDoneToday }}" style="flex:1; text-align:center; padding:11px; border-radius:12px; background: oklch(1 0 0 / 0.08); border: 1px solid oklch(1 0 0 / 0.2); color: oklch(0.97 0 0); font-size:13px; font-weight:700; backdrop-filter: blur(22px) saturate(170%); -webkit-backdrop-filter: blur(22px) saturate(170%); cursor:pointer;">Eseguito oggi</div>
+                      <div onClick="{{ m.onMarkDonePast }}" style="flex:1; text-align:center; padding:11px; border-radius:12px; background: oklch(1 0 0 / 0.08); border: 1px solid oklch(1 0 0 / 0.2); color: oklch(0.97 0 0); font-size:13px; font-weight:700; backdrop-filter: blur(22px) saturate(170%); -webkit-backdrop-filter: blur(22px) saturate(170%); cursor:pointer;">Data precedente</div>
+                    </div>
+                  </div>
+                </sc-for>
+
+                <div style="text-align:center; padding:14px; border-radius:16px; border: 1px dashed oklch(1 0 0 / 0.2); background: oklch(0 0 0 / 0.2); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); color: oklch(0.67 0 0); font-size:14px; font-weight:700; margin-top:8px;">+ Nuova voce</div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ editModalOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute; inset:0; z-index:70; background: oklch(0 0 0 / 0.6); display:flex; align-items:flex-end;">
+              <div style="width:100%; background: oklch(0.1913 0 0); border-radius:24px 24px 0 0; border-top: 1px solid oklch(1 0 0 / 0.16); padding: 18px 20px 34px; box-sizing:border-box; max-height:88%; overflow:auto; animation: slideUpIn 0.32s cubic-bezier(.2,.8,.2,1) forwards;">
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:18px;">
+                  <div style="color: oklch(0.97 0 0); font-size:18px; font-weight:800;">Modifica moto</div>
+                  <div onClick="{{ closeEditModal }}" style="width:30px; height:30px; border-radius:50%; background: oklch(1 0 0 / 0.1); display:flex; align-items:center; justify-content:center; cursor:pointer;">
+                    <svg width="13" height="13" viewBox="0 0 14 14"><path d="M1 1l12 12M13 1L1 13" stroke="oklch(0.97 0 0)" stroke-width="1.8" stroke-linecap="round"></path></svg>
+                  </div>
+                </div>
+
+                <div style="color: oklch(0.67 0 0); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px;">Foto moto</div>
+                <div style="width:100%; aspect-ratio:16/9; border-radius:14px; overflow:hidden; margin-bottom:18px;">
+                  <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="bike-photo-{{ editDraft.bikeId }}" shape="rect" placeholder="Trascina o carica una foto" style="color:oklch(0.97 0 0)" hint-size="100%,100%"></x-import>
+                </div>
+
+                <div style="color: oklch(0.67 0 0); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;">Nome moto</div>
+                <input value="{{ editDraft.name }}" onChange="{{ editDraft.onNameChange }}" style="width:100%; box-sizing:border-box; background: oklch(0 0 0 / 0.4); border: 1px solid oklch(1 0 0 / 0.2); border-radius:12px; padding:11px 12px; color: oklch(0.97 0 0); font-size:15px; font-weight:700; font-family:'Inter',sans-serif; margin-bottom:16px;">
+
+                <div style="color: oklch(0.67 0 0); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;">Categoria</div>
+                <input value="{{ editDraft.subtitle }}" onChange="{{ editDraft.onSubtitleChange }}" style="width:100%; box-sizing:border-box; background: oklch(0 0 0 / 0.4); border: 1px solid oklch(1 0 0 / 0.2); border-radius:12px; padding:11px 12px; color: oklch(0.97 0 0); font-size:15px; font-weight:700; font-family:'Inter',sans-serif; margin-bottom:18px;">
+
+                <div style="color: oklch(0.67 0 0); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px;">Colore card</div>
+                <div style="display:flex; gap:10px; margin-bottom:18px;">
+                  <sc-for list="{{ editDraft.colorOptions }}" as="c" hint-placeholder-count="5">
+                    <div onClick="{{ c.onSelect }}" style="width:34px; height:34px; border-radius:50%; background: {{ c.value }}; cursor:pointer; border: 2px solid {{ c.ringColor }};"></div>
+                  </sc-for>
+                </div>
+
+                <div style="color: oklch(0.67 0 0); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px;">Indice di rarità</div>
+                <div style="display:flex; gap:8px; margin-bottom:24px;">
+                  <sc-for list="{{ editDraft.rarityOptions }}" as="r" hint-placeholder-count="3">
+                    <div onClick="{{ r.onSelect }}" style="flex:1; text-align:center; padding:10px; border-radius:12px; background: {{ r.bg }}; border: 1px solid {{ r.border }}; color: {{ r.fg }}; font-size:13px; font-weight:700; cursor:pointer;">{{ r.label }}</div>
+                  </sc-for>
+                </div>
+
+                <div onClick="{{ saveEditDraft }}" style="text-align:center; padding:15px; border-radius:14px; background:oklch(0.97 0 0); color:oklch(0.03 0 0); font-size:15px; font-weight:800; cursor:pointer;">Salva</div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ deleteConfirmOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute; inset:0; z-index:80; background: oklch(0 0 0 / 0.55); display:flex; align-items:center; justify-content:center; animation: fadeZoomIn 0.28s ease forwards;">
+              <div style="width:78%; background: oklch(0.1913 0 0); border-radius:20px; border: 1px solid oklch(1 0 0 / 0.16); padding:24px 20px; box-sizing:border-box; text-align:center;">
+                <div style="color: oklch(0.97 0 0); font-size:17px; font-weight:800; margin-bottom:8px;">Eliminare moto</div>
+                <div style="color: oklch(0.67 0 0); font-size:14px; font-weight:500; margin-bottom:22px; line-height:1.4;">Eliminare {{ deleteConfirmBikeName }} dal garage? L'azione non può essere annullata.</div>
+                <div style="display:flex; gap:10px;">
+                  <div onClick="{{ cancelDeleteBike }}" style="flex:1; text-align:center; padding:13px; border-radius:12px; background: oklch(1 0 0 / 0.08); border: 1px solid oklch(1 0 0 / 0.2); color: oklch(0.97 0 0); font-size:14px; font-weight:700; cursor:pointer;">Annulla</div>
+                  <div onClick="{{ confirmDeleteBike }}" style="flex:1; text-align:center; padding:13px; border-radius:12px; background: oklch(0.63 0.255 25); color:oklch(0.97 0 0); font-size:14px; font-weight:800; cursor:pointer;">Elimina</div>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ paywallOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute; inset:0; z-index:90; background: oklch(0 0 0 / 0.55); display:flex; align-items:center; justify-content:center; animation: fadeZoomIn 0.28s ease forwards;">
+              <div style="width:80%; background: oklch(0.1913 0 0); border-radius:20px; border: 1px solid oklch(0.87 0.18 250 / 0.4); padding:24px 20px; box-sizing:border-box; text-align:center;">
+                <div style="color: oklch(0.97 0 0); font-size:17px; font-weight:800; margin-bottom:8px;">Limite piano Free raggiunto</div>
+                <div style="color: oklch(0.67 0 0); font-size:14px; font-weight:500; margin-bottom:22px; line-height:1.4;">{{ paywallMessage }}</div>
+                <div style="display:flex; gap:10px;">
+                  <div onClick="{{ closePaywall }}" style="flex:1; text-align:center; padding:13px; border-radius:12px; background: oklch(1 0 0 / 0.08); border: 1px solid oklch(1 0 0 / 0.2); color: oklch(0.97 0 0); font-size:14px; font-weight:700; cursor:pointer;">Chiudi</div>
+                  <div onClick="{{ paywallUpgrade }}" style="flex:1; text-align:center; padding:13px; border-radius:12px; background: oklch(0.87 0.18 250); color:oklch(0.03 0 0); font-size:14px; font-weight:800; cursor:pointer;">Sblocca Premium</div>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+        </div>
+      </x-import>
+    </div>
+
+    <!-- Setup list / Nuova sessione (onboarding) -->
+    <div data-screen-label="Setup">
+      <div style="color:#8a8a8a; font-size:12px; font-weight:600; margin-bottom:10px; text-transform:uppercase; letter-spacing:0.5px;">Setup — elenco sessioni / nuova sessione</div>
+      <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" dark="{{true}}" width="{{380}}" height="{{823}}" hint-size="380,823">
+        <div style="height:100%; display:flex; flex-direction:column; background: oklch(0.173 0 0); font-family:'Inter',sans-serif; position:relative; overflow:hidden;">
+
+          <sc-if value="{{ setupIsList }}" hint-placeholder-val="{{ true }}">
+            <div style="height:100%; display:flex; flex-direction:column;">
+              <div style="flex:1; overflow:auto; padding: 74px 20px 100px;">
+                <div style="color: oklch(0.97 0 0); font-size:29px; font-weight:800; margin-bottom:20px; letter-spacing:-0.3px; text-align:center;">Setup</div>
+
+                <sc-if value="{{ hasToday }}" hint-placeholder-val="{{ true }}">
+                  <div onClick="{{ todaySession.onClick }}" style="padding: 20px 20px 20px 0; margin-bottom: 28px; position: relative; cursor: pointer;">
+                    <div style="color: oklch(0.67 0 0); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px">Sessione di oggi</div>
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+                      <div style="color: oklch(0.97 0 0); font-size:24px; font-weight:800;">{{ todaySession.track }}</div>
+                      <div style="color: oklch(0.1913 0 0); font-size: 12px; font-weight: 800; padding: 5px 11px; border-radius: 6px; flex-shrink: 0; background-color: oklch(0.97 0 0)">{{ todaySession.runs }} run</div>
+                    </div>
+                    <div style="color: oklch(0.67 0 0); font-size:14px; font-weight:500; margin-bottom:8px;">{{ todaySession.bike }} · {{ todaySession.weather }}</div>
+                    <div style="color: {{ todaySession.dotColor }}; font-size:14px; font-weight:700;">Best lap {{ todaySession.bestLap }}</div>
+                    <svg width="8" height="14" viewBox="0 0 8 14" style="position:absolute; right:20px; bottom:0;"><path d="M1 1l6 6-6 6" fill="none" stroke="oklch(0.67 0 0)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                  </div>
+                </sc-if>
+
+                <div style="color: oklch(0.67 0 0); font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.6px; margin-bottom:6px;">Sessioni precedenti</div>
+                <sc-for list="{{ pastSessions }}" as="s" hint-placeholder-count="3">
+                  <div onClick="{{ s.onClick }}" style="padding:16px 0; border-bottom: 1px solid oklch(0 0 0 / 0.35); position:relative; cursor:pointer;">
+                    <div style="font-size: 10.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 7px; color: oklch(0.97 0 0)">{{ s.date }}</div>
+                    <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+                      <div>
+                        <div style="color: oklch(0.97 0 0); font-size:19px; font-weight:800; margin-bottom:2px;">{{ s.track }}</div>
+                        <div style="color: oklch(0.67 0 0); font-size:12.5px; font-weight:600;">{{ s.bike }} · {{ s.runs }} run</div>
+                      </div>
+                      <div style="text-align:right;">
+                        <div style="color: {{ s.dotColor }}; font-size:18px; font-weight:800; font-variant-numeric:tabular-nums;">{{ s.bestLap }}</div>
+                        <div style="color: oklch(0.67 0 0); font-size:11px; font-weight:600;">best lap</div>
+                      </div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:6px; margin-top:10px;">
+                      <sc-if value="{{ s.isSun }}" hint-placeholder-val="{{ false }}">
+                        <svg width="16" height="16" viewBox="0 0 40 40">
+                          <circle cx="20" cy="20" r="8" fill="oklch(0.67 0 0)"></circle>
+                          <g stroke="oklch(0.67 0 0)" stroke-width="2.4" stroke-linecap="round">
+                            <line x1="20" y1="3" x2="20" y2="8"></line><line x1="20" y1="32" x2="20" y2="37"></line>
+                            <line x1="3" y1="20" x2="8" y2="20"></line><line x1="32" y1="20" x2="37" y2="20"></line>
+                            <line x1="7.5" y1="7.5" x2="11" y2="11"></line><line x1="29" y1="29" x2="32.5" y2="32.5"></line>
+                            <line x1="32.5" y1="7.5" x2="29" y2="11"></line><line x1="11" y1="29" x2="7.5" y2="32.5"></line>
+                          </g>
+                        </svg>
+                      </sc-if>
+                      <sc-if value="{{ s.isClouds }}" hint-placeholder-val="{{ false }}">
+                        <svg width="16" height="16" viewBox="0 0 40 40">
+                          <path d="M11 26a6 6 0 0 1 -1-11.9 8 8 0 0 1 15.4-2.6 6.5 6.5 0 0 1 -1.4 14.5Z" fill="oklch(0.67 0 0)"></path>
+                        </svg>
+                      </sc-if>
+                      <sc-if value="{{ s.isRain }}" hint-placeholder-val="{{ false }}">
+                        <svg width="16" height="16" viewBox="0 0 40 40">
+                          <path d="M11 22a6 6 0 0 1 -1-11.9 8 8 0 0 1 15.4-2.6 6.5 6.5 0 0 1 -1.4 14.5Z" fill="oklch(0.67 0 0)"></path>
+                          <g stroke="oklch(0.67 0 0)" stroke-width="2.6" stroke-linecap="round">
+                            <line x1="14" y1="28" x2="12" y2="34"></line>
+                            <line x1="20" y1="28" x2="18" y2="34"></line>
+                            <line x1="26" y1="28" x2="24" y2="34"></line>
+                          </g>
+                        </svg>
+                      </sc-if>
+                      <span style="color: oklch(0.67 0 0); font-size:12.5px; font-weight:600;">{{ s.weather }}</span>
+                    </div>
+                    <svg width="8" height="14" viewBox="0 0 8 14" style="position:absolute; right:0; bottom:16px;"><path d="M1 1l6 6-6 6" fill="none" stroke="oklch(0.67 0 0)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                  </div>
+                </sc-for>
+
+                <div onClick="{{ openAllSessions }}" style="text-align:center; padding:14px; margin-top:8px; border-radius:16px; border: 1px solid oklch(1 0 0 / 0.24); background: oklch(0 0 0 / 0.3); backdrop-filter: blur(24px) saturate(170%); -webkit-backdrop-filter: blur(24px) saturate(170%); color: oklch(0.97 0 0); font-size:14px; font-weight:700; cursor:pointer;">Vedi tutte le sessioni</div>
+              </div>
+              <div onClick="{{ openOnboarding }}" style="position: absolute; right: 20px; bottom: 100px; width: 58px; height: 58px; border-radius: 50%; backdrop-filter: blur(26px) saturate(200%); -webkit-backdrop-filter: blur(26px) saturate(200%); border: none; display: flex; align-items: center; justify-content: center; box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.5), 0 10px 28px oklch(0 0 0 / 0.4); cursor: pointer; background-color: oklch(0.97 0 0)">
+                <svg width="24" height="24" viewBox="0 0 24 24"><path d="M12 4v16M4 12h16" stroke="oklch(0.03 0 0)" stroke-width="2.6" stroke-linecap="round"></path></svg>
+              </div>
+              <div style="{{ navSetup.barStyle }}" onMouseDown="{{ navSetup.press }}" onMouseUp="{{ navSetup.release }}" onMouseLeave="{{ navSetup.release }}" onTouchStart="{{ navSetup.press }}" onTouchEnd="{{ navSetup.release }}">
+                <div style="position:relative; display:flex;">
+                  <div style="{{ navSetup.pillStyle }}"></div>
+                  <div onClick="{{ navSetup.select0 }}" style="flex:1; position:relative; z-index:2; display:flex; align-items:center; justify-content:center; padding:8px 0; cursor:pointer;">
+                    <svg width="26" height="26" viewBox="0 0 22 22" style="display:block;"><path d="M3 10 L11 3 L19 10" fill="none" stroke="{{ navSetup.color0 }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path><rect x="5" y="10" width="12" height="9" rx="1.5" fill="none" stroke="{{ navSetup.color0 }}" stroke-width="2"></rect></svg>
+                  </div>
+                  <div onClick="{{ navSetup.select1 }}" style="flex:1; position:relative; z-index:2; display:flex; align-items:center; justify-content:center; padding:8px 0; cursor:pointer;">
+                    <svg width="26" height="26" viewBox="0 0 22 22" style="display:block;"><circle cx="11" cy="11" r="8.5" fill="none" stroke="{{ navSetup.color1 }}" stroke-width="2"></circle><line x1="11" y1="11" x2="15" y2="7" stroke="{{ navSetup.color1 }}" stroke-width="2" stroke-linecap="round"></line></svg>
+                  </div>
+                  <div onClick="{{ navSetup.select2 }}" style="flex:1; position:relative; z-index:2; display:flex; align-items:center; justify-content:center; padding:8px 0; cursor:pointer;">
+                    <svg width="26" height="26" viewBox="0 0 22 22" style="display:block;"><rect x="2" y="4" width="18" height="12" rx="5" fill="none" stroke="{{ navSetup.color2 }}" stroke-width="2"></rect><path d="M7 16 L5 20 L10 16Z" fill="{{ navSetup.color2 }}"></path></svg>
+                  </div>
+                  <div onClick="{{ navSetup.select3 }}" style="flex:1; position:relative; z-index:2; display:flex; align-items:center; justify-content:center; padding:8px 0; cursor:pointer;">
+                    <svg width="26" height="26" viewBox="0 0 22 22" style="display:block;"><circle cx="11" cy="8" r="4" fill="none" stroke="{{ navSetup.color3 }}" stroke-width="2"></circle><path d="M4 19c1.5-4 5-5 7-5s5.5 1 7 5" fill="none" stroke="{{ navSetup.color3 }}" stroke-width="2" stroke-linecap="round"></path></svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ runDetailOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute; inset:0; z-index:60; background:oklch(0.173 0 0); animation: runDetailSlideIn 0.2s cubic-bezier(.2,.8,.2,1) forwards;">
+              <div onClick="{{ closeRunDetail }}" style="position: absolute; top: 72px; left: 20px; z-index: 30; width: 44px; height: 44px; border-radius: 50%; background: oklch(0 0 0 / 0.4); backdrop-filter: blur(28px) saturate(200%); -webkit-backdrop-filter: blur(28px) saturate(200%); border: 1px solid oklch(1 0 0 / 0.24); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.3), 0 8px 22px oklch(0 0 0 / 0.4)">
+                <svg width="20" height="20" viewBox="0 0 20 20"><path d="M13 3 L6 10 L13 17" fill="none" stroke="oklch(0.97 0 0)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+              </div>
+              <div style="flex: 1; overflow: auto; padding: 70px 20px 20px; position: relative">
+                <div style="text-align:center; margin-bottom:18px;">
+                  <div onClick="{{ runWeatherNext }}" style="display:flex; align-items:center; justify-content:center; gap:5px; cursor:pointer;">
+                    <span style="color: oklch(0.67 0 0); font-size:13px; font-weight:600;">Oggi ·</span>
+                    <sc-if value="{{ runWeatherIsSun }}" hint-placeholder-val="{{ true }}">
+                      <svg width="15" height="15" viewBox="0 0 40 40">
+                        <circle cx="20" cy="20" r="8" fill="oklch(0.67 0 0)"></circle>
+                        <g stroke="oklch(0.67 0 0)" stroke-width="2.4" stroke-linecap="round">
+                          <line x1="20" y1="3" x2="20" y2="8"></line><line x1="20" y1="32" x2="20" y2="37"></line>
+                          <line x1="3" y1="20" x2="8" y2="20"></line><line x1="32" y1="20" x2="37" y2="20"></line>
+                          <line x1="7.5" y1="7.5" x2="11" y2="11"></line><line x1="29" y1="29" x2="32.5" y2="32.5"></line>
+                          <line x1="32.5" y1="7.5" x2="29" y2="11"></line><line x1="11" y1="29" x2="7.5" y2="32.5"></line>
+                        </g>
+                      </svg>
+                    </sc-if>
+                    <sc-if value="{{ runWeatherIsClouds }}" hint-placeholder-val="{{ false }}">
+                      <svg width="15" height="15" viewBox="0 0 40 40">
+                        <path d="M11 26a6 6 0 0 1 -1-11.9 8 8 0 0 1 15.4-2.6 6.5 6.5 0 0 1 -1.4 14.5Z" fill="oklch(0.67 0 0)"></path>
+                      </svg>
+                    </sc-if>
+                    <sc-if value="{{ runWeatherIsRain }}" hint-placeholder-val="{{ false }}">
+                      <svg width="15" height="15" viewBox="0 0 40 40">
+                        <path d="M11 22a6 6 0 0 1 -1-11.9 8 8 0 0 1 15.4-2.6 6.5 6.5 0 0 1 -1.4 14.5Z" fill="oklch(0.67 0 0)"></path>
+                        <g stroke="oklch(0.67 0 0)" stroke-width="2.6" stroke-linecap="round">
+                          <line x1="14" y1="28" x2="12" y2="34"></line>
+                          <line x1="20" y1="28" x2="18" y2="34"></line>
+                          <line x1="26" y1="28" x2="24" y2="34"></line>
+                        </g>
+                      </svg>
+                    </sc-if>
+                    <span style="color: oklch(0.67 0 0); font-size:13px; font-weight:600;">{{ runWeatherLabel }}</span>
+                  </div>
+                  <div style="color: oklch(0.97 0 0); font-size:25px; font-weight:800; letter-spacing:-0.3px;">Mugello</div>
+                </div>
+
+                <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:20px;">
+                  <div onClick="{{ runPrev }}" style="width:36px; height:36px; border-radius:50%; background: transparent; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;">
+                    <svg width="16" height="16" viewBox="0 0 16 16"><path d="M10 2 L4 8 L10 14" fill="none" stroke="oklch(0.97 0 0)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                  </div>
+                  <sc-if value="{{ runIsAdd }}" hint-placeholder-val="{{ false }}">
+                    <div style="flex: 1; min-width: 0; color: oklch(0.87 0.18 250); font-size: 16px; font-weight: 700; text-align: center">+ Nuovo run</div>
+                  </sc-if>
+                  <sc-if value="{{ runIsNotAdd }}" hint-placeholder-val="{{ true }}">
+                    <div style="flex:1; min-width:0; color: oklch(0.97 0 0); font-size:20px; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; text-align:center;">{{ runName }}</div>
+                  </sc-if>
+                  <div onClick="{{ runNext }}" style="width:36px; height:36px; border-radius:50%; background: transparent; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;">
+                    <svg width="16" height="16" viewBox="0 0 16 16"><path d="M6 2 L12 8 L6 14" fill="none" stroke="oklch(0.97 0 0)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                  </div>
+                </div>
+
+                <div style="padding: 6px 0; margin-bottom: 16px;">
+                  <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px 10px;">
+                    <div onClick="{{ oraOpen }}" style="cursor:pointer; text-align:center;">
+                      <div style="color: oklch(0.67 0 0); font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.4px; margin-bottom:5px;">Ora</div>
+                      <div style="color: oklch(0.97 0 0); font-size:21px; font-weight:800; font-variant-numeric: tabular-nums;">{{ generale.ora }}</div>
+                    </div>
+                    <div onClick="{{ temperaturaOpen }}" style="cursor:pointer; text-align:center;">
+                      <div style="color: oklch(0.67 0 0); font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.4px; margin-bottom:5px;">Temperatura</div>
+                      <div style="color: oklch(0.97 0 0); font-size:21px; font-weight:800; font-variant-numeric: tabular-nums;">{{ generale.temperatura }}</div>
+                    </div>
+                    <div onClick="{{ bestLapOpen }}" style="cursor:pointer; text-align:center;">
+                      <div style="color: oklch(0.67 0 0); font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.4px; margin-bottom:5px;">Best lap</div>
+                      <div style="color: {{ generale.bestLapColor }}; font-size:21px; font-weight:800; font-variant-numeric: tabular-nums;">{{ generale.bestLap }}</div>
+                    </div>
+                    <div onClick="{{ giriOpen }}" style="cursor:pointer; text-align:center;">
+                      <div style="color: oklch(0.67 0 0); font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.4px; margin-bottom:5px;">Giri</div>
+                      <div style="color: oklch(0.97 0 0); font-size:21px; font-weight:800; font-variant-numeric: tabular-nums;">{{ generale.giri }}</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div onMouseDown="{{ catBar.press }}" onMouseUp="{{ catBar.release }}" onMouseLeave="{{ catBar.release }}" onTouchStart="{{ catBar.press }}" onTouchEnd="{{ catBar.release }}" style="{{ catBar.barStyle }}">
+                  <div style="position:relative; display:flex;">
+                    <div style="{{ catBar.pillStyle }}"></div>
+                    <sc-for list="{{ categories }}" as="cat" hint-placeholder-count="4">
+                      <div onClick="{{ cat.onClick }}" style="flex:1; position:relative; z-index:2; display:flex; align-items:center; justify-content:center; padding:8px 0; cursor:pointer;">
+                        <div style="{{ cat.iconStyle }}"></div>
+                      </div>
+                    </sc-for>
+                  </div>
+                </div>
+
+                <sc-if value="{{ hasSubs }}" hint-placeholder-val="{{ true }}">
+                  <div style="display:flex; gap:8px; margin-bottom:18px;">
+                    <sc-for list="{{ subTabs }}" as="sub" hint-placeholder-count="2">
+                      <div onClick="{{ sub.onClick }}" style="flex: 1; text-align: center; padding: 10px; border-radius: 13px; background: {{ sub.bg }}; border: {{ sub.border }}; backdrop-filter: blur(22px) saturate(180%); -webkit-backdrop-filter: blur(22px) saturate(180%); color: {{ sub.fg }}; font-size: 13.5px; font-weight: 700; cursor: pointer">{{ sub.name }}</div>
+                    </sc-for>
+                  </div>
+                </sc-if>
+
+                <div style="background: transparent; padding:0;">
+                  <div style="display:flex; flex-direction:column; margin-bottom:20px;">
+                    <sc-for list="{{ activeFields }}" as="f" hint-placeholder-count="4">
+                      <div style="padding:14px 0; border-bottom: 1px solid oklch(0 0 0 / 0.35);">
+                        <sc-if value="{{ f.isStepper }}" hint-placeholder-val="{{ false }}">
+                          <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+                            <div style="color: oklch(0.67 0 0); font-size:14px; font-weight:600;">{{ f.label }}</div>
+                            <div style="display:flex; align-items:center; gap:14px;">
+                              <div onClick="{{ f.onDec }}" style="width:34px; height:34px; border-radius:50%; background: oklch(0 0 0 / 0.35); border: 1px solid oklch(1 0 0 / 0.24); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); display:flex; align-items:center; justify-content:center; color: oklch(0.97 0 0); font-size:19px; font-weight:700; cursor:pointer; user-select:none; box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.32);">–</div>
+                              <div style="min-width:78px; text-align:center; color: oklch(0.97 0 0); font-size:16px; font-weight:700; font-variant-numeric: tabular-nums;">{{ f.value }}</div>
+                              <div onClick="{{ f.onInc }}" style="width: 34px; height: 34px; border-radius: 50%; border: none; backdrop-filter: blur(20px) saturate(200%); -webkit-backdrop-filter: blur(20px) saturate(200%); display: flex; align-items: center; justify-content: center; cursor: pointer; user-select: none; box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.45); background-color: oklch(0.97 0 0)"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M7 1v12M1 7h12" stroke="oklch(0.03 0 0)" stroke-width="2" stroke-linecap="round"></path></svg></div>
+                            </div>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ f.isText }}" hint-placeholder-val="{{ true }}">
+                          <div>
+                            <div style="color: oklch(0.67 0 0); font-size:12px; font-weight:600; margin-bottom:6px;">{{ f.label }}</div>
+                            <input value="{{ f.value }}" style="width:100%; box-sizing:border-box; background: oklch(0 0 0 / 0.3); border: 1px solid oklch(1 0 0 / 0.24); border-radius:12px; padding:10px 12px; color: oklch(0.97 0 0); font-size:16px; font-weight:700; font-family:'Inter',sans-serif; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);">
+                          </div>
+                        </sc-if>
+                      </div>
+                    </sc-for>
+                  </div>
+
+                  <div style="color: oklch(0.67 0 0); font-size:12px; font-weight:600; margin-bottom:8px;">Note</div>
+                  <textarea defaultValue="{{ activeNoteValue }}" style="width:100%; box-sizing:border-box; min-height:90px; background: oklch(0 0 0 / 0.3); border: 1px solid oklch(1 0 0 / 0.24); border-radius:14px; padding:12px; color: oklch(0.97 0 0); font-size:15px; font-weight:500; line-height:1.5; font-family:'Inter',sans-serif; resize:none; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);"></textarea>
+                </div>
+              </div>
+
+              <sc-if value="{{ pickerOpen }}" hint-placeholder-val="{{ false }}">
+                <div style="position:absolute; inset:0; z-index:60; background: oklch(0 0 0 / 0.55); display:flex; align-items:flex-end;">
+                  <div style="width:100%; background: oklch(0 0 0 / 0.5); backdrop-filter: blur(32px) saturate(200%); -webkit-backdrop-filter: blur(32px) saturate(200%); border-radius:26px 26px 0 0; padding-bottom: 30px; border-top: 1px solid oklch(1 0 0 / 0.18); box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.2), 0 -10px 30px oklch(0 0 0 / 0.4);">
+                    <div style="display:flex; align-items:center; justify-content:space-between; padding: 14px 16px; border-bottom: 1px solid oklch(0 0 0 / 0.5);">
+                      <div onClick="{{ closePicker }}" style="color: oklch(0.67 0 0); font-size:15px; font-weight:600; cursor:pointer; padding:6px 4px;">Annulla</div>
+                      <div style="color: oklch(0.97 0 0); font-size:15px; font-weight:700;">{{ pickerTitle }}</div>
+                      <div onClick="{{ confirmPicker }}" style="color: oklch(0.97 0 0); font-size:15px; font-weight:700; cursor:pointer; padding:6px 4px;">Fatto</div>
+                    </div>
+                    <div style="position:relative; height:200px; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+                      <div style="position:absolute; top:80px; left:16px; right:16px; height:40px; border-top: 1px solid oklch(0 0 0 / 0.6); border-bottom: 1px solid oklch(0 0 0 / 0.6); pointer-events:none;"></div>
+                      <div style="display:flex; align-items:center; justify-content:center; gap:2px;">
+                        <sc-for list="{{ pickerColumns }}" as="col" hint-placeholder-count="2">
+                          <div style="display:flex; align-items:center;">
+                            <sc-if value="{{ col.hasSep }}" hint-placeholder-val="{{ false }}">
+                              <div style="color: oklch(0.97 0 0); font-size:20px; font-weight:700; padding: 0 2px;">{{ col.sep }}</div>
+                            </sc-if>
+                            <div ref="{{ col.refCb }}" onScroll="{{ col.onScroll }}" style="height:200px; width:64px; overflow-y:auto; scroll-snap-type: y mandatory; -webkit-overflow-scrolling:touch;">
+                              <div style="height:80px;"></div>
+                              <sc-for list="{{ col.items }}" as="it" hint-placeholder-count="6">
+                                <div style="height:40px; line-height:40px; text-align:center; scroll-snap-align:center; font-size:20px; font-variant-numeric: tabular-nums; color: {{ it.color }}; font-weight: {{ it.weight }};">{{ it.label }}</div>
+                              </sc-for>
+                              <div style="height:80px;"></div>
+                            </div>
+                          </div>
+                        </sc-for>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </sc-if>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ setupIsOnboarding }}" hint-placeholder-val="{{ false }}">
+            <div style="height:100%; position:relative; animation: fadeZoomIn 0.28s ease forwards;">
+              
+              <div style="height:100%; display:flex; flex-direction:column;">
+              <div style="flex: 1; overflow: auto; padding: 78px 22px 32px; display: flex; flex-direction: column; position: relative">
+                
+                <div style="color: oklch(0.97 0 0); font-size: 22px; font-weight: 800; letter-spacing: -0.3px; text-align: center; margin-bottom: 8px; margin-top: 3px">Nuova sessione</div><div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+                <div style="color: oklch(0.67 0 0); font-size:12px; font-weight:700; letter-spacing:0.6px; text-transform:uppercase; margin-bottom:16px; text-align:center;">Moto</div>
+                <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:36px;">
+                  <div onClick="{{ bikePrev }}" style="width:36px; height:36px; border-radius:50%; background: transparent; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;">
+                    <svg width="16" height="16" viewBox="0 0 16 16"><path d="M10 2 L4 8 L10 14" fill="none" stroke="oklch(0.67 0 0)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                  </div>
+                  <sc-if value="{{ bikeIsAdd }}" hint-placeholder-val="{{ false }}">
+                    <div style="flex:1; min-width:0; color: oklch(0.97 0 0); font-size:16px; font-weight:700; text-align:center; line-height:1.3; word-break:break-word; overflow-wrap:break-word; padding:0 6px;">+ Aggiungi nuova moto</div>
+                  </sc-if>
+                  <sc-if value="{{ bikeIsNotAdd }}" hint-placeholder-val="{{ true }}">
+                    <div style="flex:1; min-width:0; color: oklch(0.97 0 0); font-size:22px; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; text-align:center; line-height:1.25; word-break:break-word; overflow-wrap:break-word; padding:0 6px;">{{ bikeName }}</div>
+                  </sc-if>
+                  <div onClick="{{ bikeNext }}" style="width:36px; height:36px; border-radius:50%; background: transparent; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;">
+                    <svg width="16" height="16" viewBox="0 0 16 16"><path d="M6 2 L12 8 L6 14" fill="none" stroke="oklch(0.67 0 0)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                  </div>
+                </div>
+
+                <div style="color: oklch(0.67 0 0); font-size:12px; font-weight:700; letter-spacing:0.6px; text-transform:uppercase; margin-bottom:16px; text-align:center;">Pista</div>
+                <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:36px;">
+                  <div onClick="{{ trackPrev }}" style="width:36px; height:36px; border-radius:50%; background: transparent; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;">
+                    <svg width="16" height="16" viewBox="0 0 16 16"><path d="M10 2 L4 8 L10 14" fill="none" stroke="oklch(0.67 0 0)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                  </div>
+                  <sc-if value="{{ trackIsAdd }}" hint-placeholder-val="{{ false }}">
+                    <div style="flex:1; min-width:0; color: oklch(0.97 0 0); font-size:16px; font-weight:700; text-align:center; line-height:1.3; word-break:break-word; overflow-wrap:break-word; padding:0 6px;">+ Aggiungi nuova pista</div>
+                  </sc-if>
+                  <sc-if value="{{ trackIsNotAdd }}" hint-placeholder-val="{{ true }}">
+                    <div style="flex:1; min-width:0; color: oklch(0.97 0 0); font-size:22px; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; text-align:center; line-height:1.25; word-break:break-word; overflow-wrap:break-word; padding:0 6px;">{{ trackName }}</div>
+                  </sc-if>
+                  <div onClick="{{ trackNext }}" style="width:36px; height:36px; border-radius:50%; background: transparent; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;">
+                    <svg width="16" height="16" viewBox="0 0 16 16"><path d="M6 2 L12 8 L6 14" fill="none" stroke="oklch(0.67 0 0)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                  </div>
+                </div>
+
+                <div style="color: oklch(0.67 0 0); font-size:12px; font-weight:700; letter-spacing:0.6px; text-transform:uppercase; margin-bottom:16px; text-align:center;">Meteo</div>
+                <div style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
+                  <div onClick="{{ weatherPrev }}" style="width:36px; height:36px; border-radius:50%; background: transparent; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;">
+                    <svg width="16" height="16" viewBox="0 0 16 16"><path d="M10 2 L4 8 L10 14" fill="none" stroke="oklch(0.67 0 0)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                  </div>
+                  <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">
+                    <sc-if value="{{ isSun }}" hint-placeholder-val="{{ true }}">
+                      <svg width="56" height="56" viewBox="0 0 40 40">
+                        <circle cx="20" cy="20" r="8" fill="oklch(0.97 0 0)"></circle>
+                        <g stroke="oklch(0.97 0 0)" stroke-width="2.2" stroke-linecap="round">
+                          <line x1="20" y1="3" x2="20" y2="8"></line><line x1="20" y1="32" x2="20" y2="37"></line>
+                          <line x1="3" y1="20" x2="8" y2="20"></line><line x1="32" y1="20" x2="37" y2="20"></line>
+                          <line x1="7.5" y1="7.5" x2="11" y2="11"></line><line x1="29" y1="29" x2="32.5" y2="32.5"></line>
+                          <line x1="32.5" y1="7.5" x2="29" y2="11"></line><line x1="11" y1="29" x2="7.5" y2="32.5"></line>
+                        </g>
+                      </svg>
+                    </sc-if>
+                    <sc-if value="{{ isClouds }}" hint-placeholder-val="{{ false }}">
+                      <svg width="56" height="56" viewBox="0 0 40 40">
+                        <path d="M11 26a6 6 0 0 1 -1-11.9 8 8 0 0 1 15.4-2.6 6.5 6.5 0 0 1 -1.4 14.5Z" fill="oklch(0.97 0 0)"></path>
+                      </svg>
+                    </sc-if>
+                    <sc-if value="{{ isRain }}" hint-placeholder-val="{{ false }}">
+                      <svg width="56" height="56" viewBox="0 0 40 40">
+                        <path d="M11 22a6 6 0 0 1 -1-11.9 8 8 0 0 1 15.4-2.6 6.5 6.5 0 0 1 -1.4 14.5Z" fill="oklch(0.97 0 0)"></path>
+                        <g stroke="oklch(0.97 0 0)" stroke-width="2.3" stroke-linecap="round">
+                          <line x1="14" y1="28" x2="12" y2="34"></line>
+                          <line x1="20" y1="28" x2="18" y2="34"></line>
+                          <line x1="26" y1="28" x2="24" y2="34"></line>
+                        </g>
+                      </svg>
+                    </sc-if>
+                    <div style="color: oklch(0.67 0 0); font-size:14px; font-weight:700;">{{ weatherLabel }}</div>
+                  </div>
+                  <div onClick="{{ weatherNext }}" style="width:36px; height:36px; border-radius:50%; background: transparent; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;">
+                    <svg width="16" height="16" viewBox="0 0 16 16"><path d="M6 2 L12 8 L6 14" fill="none" stroke="oklch(0.67 0 0)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                  </div>
+                </div>
+                </div>
+              <div onClick="{{ closeOnboarding }}" style="position: absolute; top: 72px; left: 25px; z-index: 30; width: 44px; height: 44px; border-radius: 50%; background: oklch(0 0 0 / 0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid oklch(0 0 0 / 0.5); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 6px 18px oklch(0 0 0 / 0.35)">
+                <svg width="20" height="20" viewBox="0 0 20 20"><path d="M13 3 L6 10 L13 17" fill="none" stroke="oklch(0.97 0 0)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+              </div></div>
+              <div style="padding: 16px 22px 40px;">
+                <div onClick="{{ startSession }}" style="backdrop-filter: blur(26px) saturate(200%); -webkit-backdrop-filter: blur(26px) saturate(200%); color: oklch(0.03 0 0); text-align: center; padding: 17px; border-radius: 16px; font-size: 16px; font-weight: 800; cursor: pointer; border: none; box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.5), 0 10px 26px oklch(0 0 0 / 0.35); background-color: oklch(0.97 0 0)">Inizia sessione</div>
+              </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ setupIsAllSessions }}" hint-placeholder-val="{{ false }}">
+            <div style="height:100%; position:relative; animation: fadeZoomIn 0.28s ease forwards;">
+              <div onClick="{{ closeAllSessions }}" style="position: absolute; top: 72px; left: 20px; z-index: 30; width: 44px; height: 44px; border-radius: 50%; background: oklch(0 0 0 / 0.4); backdrop-filter: blur(28px) saturate(200%); -webkit-backdrop-filter: blur(28px) saturate(200%); border: 1px solid oklch(1 0 0 / 0.24); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.3), 0 8px 22px oklch(0 0 0 / 0.4)">
+                <svg width="20" height="20" viewBox="0 0 20 20"><path d="M13 3 L6 10 L13 17" fill="none" stroke="oklch(0.97 0 0)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+              </div>
+              <div style="height:100%; overflow:auto; padding: 78px 20px 40px; box-sizing:border-box;">
+                <div style="color: oklch(0.97 0 0); font-size: 24px; font-weight: 800; margin-bottom: 16px; letter-spacing: -0.3px; text-align: center; margin-top: 2px">Tutte le sessioni</div>
+
+                <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px;">
+                  <div onClick="{{ cycleFilterBike }}" style="display:flex; align-items:center; gap:6px; padding:9px 13px; border-radius:14px; border: 1px solid oklch(1 0 0 / 0.24); background: oklch(0 0 0 / 0.35); backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%); box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.32); cursor:pointer;">
+                    <span style="color: oklch(0.67 0 0); font-size:11px; font-weight:600;">Moto</span>
+                    <span style="color: oklch(0.97 0 0); font-size:12.5px; font-weight:700;">{{ filterBikeLabel }}</span>
+                  </div>
+                  <div onClick="{{ cycleFilterTrack }}" style="display:flex; align-items:center; gap:6px; padding:9px 13px; border-radius:14px; border: 1px solid oklch(1 0 0 / 0.24); background: oklch(0 0 0 / 0.35); backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%); box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.32); cursor:pointer;">
+                    <span style="color: oklch(0.67 0 0); font-size:11px; font-weight:600;">Pista</span>
+                    <span style="color: oklch(0.97 0 0); font-size:12.5px; font-weight:700;">{{ filterTrackLabel }}</span>
+                  </div>
+                  <div onClick="{{ cycleFilterDate }}" style="display:flex; align-items:center; gap:6px; padding:9px 13px; border-radius:14px; border: 1px solid oklch(1 0 0 / 0.24); background: oklch(0 0 0 / 0.35); backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%); box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.32); cursor:pointer;">
+                    <span style="color: oklch(0.67 0 0); font-size:11px; font-weight:600;">Data</span>
+                    <span style="color: oklch(0.97 0 0); font-size:12.5px; font-weight:700;">{{ filterDateLabel }}</span>
+                  </div>
+                </div>
+
+                <sc-for list="{{ allSessionsFiltered }}" as="s" hint-placeholder-count="6">
+                  <div style="padding:16px 0; border-bottom: 1px solid oklch(0 0 0 / 0.35); position:relative;">
+                    <div style="font-size: 10.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 7px; color: oklch(0.97 0 0)">{{ s.date }}</div>
+                    <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+                      <div>
+                        <div style="color: oklch(0.97 0 0); font-size:19px; font-weight:800; margin-bottom:2px;">{{ s.track }}</div>
+                        <div style="color: oklch(0.67 0 0); font-size:12.5px; font-weight:600;">{{ s.bike }} · {{ s.runs }} run</div>
+                      </div>
+                      <div style="text-align:right;">
+                        <div style="color: {{ s.dotColor }}; font-size:18px; font-weight:800; font-variant-numeric:tabular-nums;">{{ s.bestLap }}</div>
+                        <div style="color: oklch(0.67 0 0); font-size:11px; font-weight:600;">best lap</div>
+                      </div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:6px; margin-top:10px;">
+                      <sc-if value="{{ s.isSun }}" hint-placeholder-val="{{ false }}">
+                        <svg width="16" height="16" viewBox="0 0 40 40">
+                          <circle cx="20" cy="20" r="8" fill="oklch(0.67 0 0)"></circle>
+                          <g stroke="oklch(0.67 0 0)" stroke-width="2.4" stroke-linecap="round">
+                            <line x1="20" y1="3" x2="20" y2="8"></line><line x1="20" y1="32" x2="20" y2="37"></line>
+                            <line x1="3" y1="20" x2="8" y2="20"></line><line x1="32" y1="20" x2="37" y2="20"></line>
+                            <line x1="7.5" y1="7.5" x2="11" y2="11"></line><line x1="29" y1="29" x2="32.5" y2="32.5"></line>
+                            <line x1="32.5" y1="7.5" x2="29" y2="11"></line><line x1="11" y1="29" x2="7.5" y2="32.5"></line>
+                          </g>
+                        </svg>
+                      </sc-if>
+                      <sc-if value="{{ s.isClouds }}" hint-placeholder-val="{{ false }}">
+                        <svg width="16" height="16" viewBox="0 0 40 40">
+                          <path d="M11 26a6 6 0 0 1 -1-11.9 8 8 0 0 1 15.4-2.6 6.5 6.5 0 0 1 -1.4 14.5Z" fill="oklch(0.67 0 0)"></path>
+                        </svg>
+                      </sc-if>
+                      <sc-if value="{{ s.isRain }}" hint-placeholder-val="{{ false }}">
+                        <svg width="16" height="16" viewBox="0 0 40 40">
+                          <path d="M11 22a6 6 0 0 1 -1-11.9 8 8 0 0 1 15.4-2.6 6.5 6.5 0 0 1 -1.4 14.5Z" fill="oklch(0.67 0 0)"></path>
+                          <g stroke="oklch(0.67 0 0)" stroke-width="2.6" stroke-linecap="round">
+                            <line x1="14" y1="28" x2="12" y2="34"></line>
+                            <line x1="20" y1="28" x2="18" y2="34"></line>
+                            <line x1="26" y1="28" x2="24" y2="34"></line>
+                          </g>
+                        </svg>
+                      </sc-if>
+                      <span style="color: oklch(0.67 0 0); font-size:12.5px; font-weight:600;">{{ s.weather }}</span>
+                    </div>
+                    <svg width="8" height="14" viewBox="0 0 8 14" style="position:absolute; right:0; bottom:16px;"><path d="M1 1l6 6-6 6" fill="none" stroke="oklch(0.67 0 0)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ paywallOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute; inset:0; z-index:90; background: oklch(0 0 0 / 0.55); display:flex; align-items:center; justify-content:center; animation: fadeZoomIn 0.28s ease forwards;">
+              <div style="width:80%; background: oklch(0.1913 0 0); border-radius:20px; border: 1px solid oklch(0.87 0.18 250 / 0.4); padding:24px 20px; box-sizing:border-box; text-align:center;">
+                <div style="color: oklch(0.97 0 0); font-size:17px; font-weight:800; margin-bottom:8px;">Limite piano Free raggiunto</div>
+                <div style="color: oklch(0.67 0 0); font-size:14px; font-weight:500; margin-bottom:22px; line-height:1.4;">{{ paywallMessage }}</div>
+                <div style="display:flex; gap:10px;">
+                  <div onClick="{{ closePaywall }}" style="flex:1; text-align:center; padding:13px; border-radius:12px; background: oklch(1 0 0 / 0.08); border: 1px solid oklch(1 0 0 / 0.2); color: oklch(0.97 0 0); font-size:14px; font-weight:700; cursor:pointer;">Chiudi</div>
+                  <div onClick="{{ paywallUpgrade }}" style="flex:1; text-align:center; padding:13px; border-radius:12px; background: oklch(0.87 0.18 250); color:oklch(0.03 0 0); font-size:14px; font-weight:800; cursor:pointer;">Sblocca Premium</div>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+        </div>
+      </x-import>
+    </div>
+
+    <!-- Run detail -->
+    <div data-screen-label="Setup — dettaglio run">
+      <div style="color:#8a8a8a; font-size:12px; font-weight:600; margin-bottom:10px; text-transform:uppercase; letter-spacing:0.5px;">Setup — dettaglio run</div>
+      <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" dark="{{true}}" width="{{380}}" height="{{823}}" hint-size="380,823">
+        <div style="height:100%; display:flex; flex-direction:column; background: oklch(0.173 0 0); font-family:'Inter',sans-serif; position:relative;">
+          <div style="flex: 1; overflow: auto; padding: 70px 20px 20px; position: relative">
+            <div style="text-align:center; margin-bottom:18px;">
+              <div onClick="{{ runWeatherNext }}" style="display:flex; align-items:center; justify-content:center; gap:5px; cursor:pointer;">
+                <span style="color: oklch(0.67 0 0); font-size:13px; font-weight:600;">Oggi ·</span>
+                <sc-if value="{{ runWeatherIsSun }}" hint-placeholder-val="{{ true }}">
+                  <svg width="15" height="15" viewBox="0 0 40 40">
+                    <circle cx="20" cy="20" r="8" fill="oklch(0.67 0 0)"></circle>
+                    <g stroke="oklch(0.67 0 0)" stroke-width="2.4" stroke-linecap="round">
+                      <line x1="20" y1="3" x2="20" y2="8"></line><line x1="20" y1="32" x2="20" y2="37"></line>
+                      <line x1="3" y1="20" x2="8" y2="20"></line><line x1="32" y1="20" x2="37" y2="20"></line>
+                      <line x1="7.5" y1="7.5" x2="11" y2="11"></line><line x1="29" y1="29" x2="32.5" y2="32.5"></line>
+                      <line x1="32.5" y1="7.5" x2="29" y2="11"></line><line x1="11" y1="29" x2="7.5" y2="32.5"></line>
+                    </g>
+                  </svg>
+                </sc-if>
+                <sc-if value="{{ runWeatherIsClouds }}" hint-placeholder-val="{{ false }}">
+                  <svg width="15" height="15" viewBox="0 0 40 40">
+                    <path d="M11 26a6 6 0 0 1 -1-11.9 8 8 0 0 1 15.4-2.6 6.5 6.5 0 0 1 -1.4 14.5Z" fill="oklch(0.67 0 0)"></path>
+                  </svg>
+                </sc-if>
+                <sc-if value="{{ runWeatherIsRain }}" hint-placeholder-val="{{ false }}">
+                  <svg width="15" height="15" viewBox="0 0 40 40">
+                    <path d="M11 22a6 6 0 0 1 -1-11.9 8 8 0 0 1 15.4-2.6 6.5 6.5 0 0 1 -1.4 14.5Z" fill="oklch(0.67 0 0)"></path>
+                    <g stroke="oklch(0.67 0 0)" stroke-width="2.6" stroke-linecap="round">
+                      <line x1="14" y1="28" x2="12" y2="34"></line>
+                      <line x1="20" y1="28" x2="18" y2="34"></line>
+                      <line x1="26" y1="28" x2="24" y2="34"></line>
+                    </g>
+                  </svg>
+                </sc-if>
+                <span style="color: oklch(0.67 0 0); font-size:13px; font-weight:600;">{{ runWeatherLabel }}</span>
+              </div>
+              <div style="color: oklch(0.97 0 0); font-size:25px; font-weight:800; letter-spacing:-0.3px;">Mugello</div>
+            </div>
+
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:20px;">
+              <div onClick="{{ runPrev }}" style="width:36px; height:36px; border-radius:50%; background: transparent; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;">
+                <svg width="16" height="16" viewBox="0 0 16 16"><path d="M10 2 L4 8 L10 14" fill="none" stroke="oklch(0.97 0 0)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+              </div>
+              <sc-if value="{{ runIsAdd }}" hint-placeholder-val="{{ false }}">
+                <div style="flex: 1; min-width: 0; color: oklch(0.87 0.18 250); font-size: 16px; font-weight: 700; text-align: center">+ Nuovo run</div>
+              </sc-if>
+              <sc-if value="{{ runIsNotAdd }}" hint-placeholder-val="{{ true }}">
+                <div style="flex:1; min-width:0; color: oklch(0.97 0 0); font-size:20px; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; text-align:center;">{{ runName }}</div>
+              </sc-if>
+              <div onClick="{{ runNext }}" style="width:36px; height:36px; border-radius:50%; background: transparent; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;">
+                <svg width="16" height="16" viewBox="0 0 16 16"><path d="M6 2 L12 8 L6 14" fill="none" stroke="oklch(0.97 0 0)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+              </div>
+            </div>
+
+            <div style="padding: 6px 0; margin-bottom: 16px;">
+              <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px 10px;">
+                <div onClick="{{ oraOpen }}" style="cursor:pointer; text-align:center;">
+                  <div style="color: oklch(0.67 0 0); font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.4px; margin-bottom:5px;">Ora</div>
+                  <div style="color: oklch(0.97 0 0); font-size:21px; font-weight:800; font-variant-numeric: tabular-nums;">{{ generale.ora }}</div>
+                </div>
+                <div onClick="{{ temperaturaOpen }}" style="cursor:pointer; text-align:center;">
+                  <div style="color: oklch(0.67 0 0); font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.4px; margin-bottom:5px;">Temperatura</div>
+                  <div style="color: oklch(0.97 0 0); font-size:21px; font-weight:800; font-variant-numeric: tabular-nums;">{{ generale.temperatura }}</div>
+                </div>
+                <div onClick="{{ bestLapOpen }}" style="cursor:pointer; text-align:center;">
+                  <div style="color: oklch(0.67 0 0); font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.4px; margin-bottom:5px;">Best lap</div>
+                  <div style="color: {{ generale.bestLapColor }}; font-size:21px; font-weight:800; font-variant-numeric: tabular-nums;">{{ generale.bestLap }}</div>
+                </div>
+                <div onClick="{{ giriOpen }}" style="cursor:pointer; text-align:center;">
+                  <div style="color: oklch(0.67 0 0); font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.4px; margin-bottom:5px;">Giri</div>
+                  <div style="color: oklch(0.97 0 0); font-size:21px; font-weight:800; font-variant-numeric: tabular-nums;">{{ generale.giri }}</div>
+                </div>
+              </div>
+            </div>
+
+            <div onMouseDown="{{ catBar.press }}" onMouseUp="{{ catBar.release }}" onMouseLeave="{{ catBar.release }}" onTouchStart="{{ catBar.press }}" onTouchEnd="{{ catBar.release }}" style="{{ catBar.barStyle }}">
+              <div style="position:relative; display:flex;">
+                <div style="{{ catBar.pillStyle }}"></div>
+                <sc-for list="{{ categories }}" as="cat" hint-placeholder-count="4">
+                  <div onClick="{{ cat.onClick }}" style="flex:1; position:relative; z-index:2; display:flex; align-items:center; justify-content:center; padding:8px 0; cursor:pointer;">
+                    <div style="{{ cat.iconStyle }}"></div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+
+            <sc-if value="{{ hasSubs }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex; gap:8px; margin-bottom:18px;">
+                <sc-for list="{{ subTabs }}" as="sub" hint-placeholder-count="2">
+                  <div onClick="{{ sub.onClick }}" style="flex: 1; text-align: center; padding: 10px; border-radius: 13px; background: {{ sub.bg }}; border: {{ sub.border }}; backdrop-filter: blur(22px) saturate(180%); -webkit-backdrop-filter: blur(22px) saturate(180%); color: {{ sub.fg }}; font-size: 13.5px; font-weight: 700; cursor: pointer">{{ sub.name }}</div>
+                </sc-for>
+              </div>
+            </sc-if>
+
+            <div style="background: transparent; padding:0;">
+              <div style="display:flex; flex-direction:column; margin-bottom:20px;">
+                <sc-for list="{{ activeFields }}" as="f" hint-placeholder-count="4">
+                  <div style="padding:14px 0; border-bottom: 1px solid oklch(0 0 0 / 0.35);">
+                    <sc-if value="{{ f.isStepper }}" hint-placeholder-val="{{ false }}">
+                      <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+                        <div style="color: oklch(0.67 0 0); font-size:14px; font-weight:600;">{{ f.label }}</div>
+                        <div style="display:flex; align-items:center; gap:14px;">
+                          <div onClick="{{ f.onDec }}" style="width:34px; height:34px; border-radius:50%; background: oklch(0 0 0 / 0.35); border: 1px solid oklch(1 0 0 / 0.24); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); display:flex; align-items:center; justify-content:center; color: oklch(0.97 0 0); font-size:19px; font-weight:700; cursor:pointer; user-select:none; box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.32);">–</div>
+                          <div style="min-width:78px; text-align:center; color: oklch(0.97 0 0); font-size:16px; font-weight:700; font-variant-numeric: tabular-nums;">{{ f.value }}</div>
+                          <div onClick="{{ f.onInc }}" style="width: 34px; height: 34px; border-radius: 50%; border: none; backdrop-filter: blur(20px) saturate(200%); -webkit-backdrop-filter: blur(20px) saturate(200%); display: flex; align-items: center; justify-content: center; cursor: pointer; user-select: none; box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.45); background-color: oklch(0.97 0 0)"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M7 1v12M1 7h12" stroke="oklch(0.03 0 0)" stroke-width="2" stroke-linecap="round"></path></svg></div>
+                        </div>
+                      </div>
+                    </sc-if>
+                    <sc-if value="{{ f.isText }}" hint-placeholder-val="{{ true }}">
+                      <div>
+                        <div style="color: oklch(0.67 0 0); font-size:12px; font-weight:600; margin-bottom:6px;">{{ f.label }}</div>
+                        <input value="{{ f.value }}" style="width:100%; box-sizing:border-box; background: oklch(0 0 0 / 0.3); border: 1px solid oklch(1 0 0 / 0.24); border-radius:12px; padding:10px 12px; color: oklch(0.97 0 0); font-size:16px; font-weight:700; font-family:'Inter',sans-serif; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);">
+                      </div>
+                    </sc-if>
+                  </div>
+                </sc-for>
+              </div>
+
+              <div style="color: oklch(0.67 0 0); font-size:12px; font-weight:600; margin-bottom:8px;">Note</div>
+              <textarea defaultValue="{{ activeNoteValue }}" style="width:100%; box-sizing:border-box; min-height:90px; background: oklch(0 0 0 / 0.3); border: 1px solid oklch(1 0 0 / 0.24); border-radius:14px; padding:12px; color: oklch(0.97 0 0); font-size:15px; font-weight:500; line-height:1.5; font-family:'Inter',sans-serif; resize:none; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);"></textarea>
+            </div>
+          </div>
+
+          <sc-if value="{{ pickerOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute; inset:0; z-index:60; background: oklch(0 0 0 / 0.55); display:flex; align-items:flex-end;">
+              <div style="width:100%; background: oklch(0 0 0 / 0.5); backdrop-filter: blur(32px) saturate(200%); -webkit-backdrop-filter: blur(32px) saturate(200%); border-radius:26px 26px 0 0; padding-bottom: 30px; border-top: 1px solid oklch(1 0 0 / 0.18); box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.2), 0 -10px 30px oklch(0 0 0 / 0.4);">
+                <div style="display:flex; align-items:center; justify-content:space-between; padding: 14px 16px; border-bottom: 1px solid oklch(0 0 0 / 0.5);">
+                  <div onClick="{{ closePicker }}" style="color: oklch(0.67 0 0); font-size:15px; font-weight:600; cursor:pointer; padding:6px 4px;">Annulla</div>
+                  <div style="color: oklch(0.97 0 0); font-size:15px; font-weight:700;">{{ pickerTitle }}</div>
+                  <div onClick="{{ confirmPicker }}" style="color: oklch(0.97 0 0); font-size:15px; font-weight:700; cursor:pointer; padding:6px 4px;">Fatto</div>
+                </div>
+                <div style="position:relative; height:200px; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+                  <div style="position:absolute; top:80px; left:16px; right:16px; height:40px; border-top: 1px solid oklch(0 0 0 / 0.6); border-bottom: 1px solid oklch(0 0 0 / 0.6); pointer-events:none;"></div>
+                  <div style="display:flex; align-items:center; justify-content:center; gap:2px;">
+                    <sc-for list="{{ pickerColumns }}" as="col" hint-placeholder-count="2">
+                      <div style="display:flex; align-items:center;">
+                        <sc-if value="{{ col.hasSep }}" hint-placeholder-val="{{ false }}">
+                          <div style="color: oklch(0.97 0 0); font-size:20px; font-weight:700; padding: 0 2px;">{{ col.sep }}</div>
+                        </sc-if>
+                        <div ref="{{ col.refCb }}" onScroll="{{ col.onScroll }}" style="height:200px; width:64px; overflow-y:auto; scroll-snap-type: y mandatory; -webkit-overflow-scrolling:touch;">
+                          <div style="height:80px;"></div>
+                          <sc-for list="{{ col.items }}" as="it" hint-placeholder-count="6">
+                            <div style="height:40px; line-height:40px; text-align:center; scroll-snap-align:center; font-size:20px; font-variant-numeric: tabular-nums; color: {{ it.color }}; font-weight: {{ it.weight }};">{{ it.label }}</div>
+                          </sc-for>
+                          <div style="height:80px;"></div>
+                        </div>
+                      </div>
+                    </sc-for>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ paywallOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute; inset:0; z-index:90; background: oklch(0 0 0 / 0.55); display:flex; align-items:center; justify-content:center; animation: fadeZoomIn 0.28s ease forwards;">
+              <div style="width:80%; background: oklch(0.1913 0 0); border-radius:20px; border: 1px solid oklch(0.87 0.18 250 / 0.4); padding:24px 20px; box-sizing:border-box; text-align:center;">
+                <div style="color: oklch(0.97 0 0); font-size:17px; font-weight:800; margin-bottom:8px;">Limite piano Free raggiunto</div>
+                <div style="color: oklch(0.67 0 0); font-size:14px; font-weight:500; margin-bottom:22px; line-height:1.4;">{{ paywallMessage }}</div>
+                <div style="display:flex; gap:10px;">
+                  <div onClick="{{ closePaywall }}" style="flex:1; text-align:center; padding:13px; border-radius:12px; background: oklch(1 0 0 / 0.08); border: 1px solid oklch(1 0 0 / 0.2); color: oklch(0.97 0 0); font-size:14px; font-weight:700; cursor:pointer;">Chiudi</div>
+                  <div onClick="{{ paywallUpgrade }}" style="flex:1; text-align:center; padding:13px; border-radius:12px; background: oklch(0.87 0.18 250); color:oklch(0.03 0 0); font-size:14px; font-weight:800; cursor:pointer;">Sblocca Premium</div>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+      </x-import>
+    </div>
+
+    <!-- Consigli AI -->
+    <div data-screen-label="Consigli AI">
+      <div style="color:#8a8a8a; font-size:12px; font-weight:600; margin-bottom:10px; text-transform:uppercase; letter-spacing:0.5px;">Consigli AI</div>
+      <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" dark="{{true}}" width="{{380}}" height="{{823}}" hint-size="380,823">
+        <div style="height:100%; display:flex; flex-direction:column; background: oklch(0.173 0 0); font-family:'Inter',sans-serif; position:relative;">
+          <div style="flex:1; overflow:auto; padding: 74px 20px 110px;">
+            <div style="color: oklch(0.97 0 0); font-size:29px; font-weight:800; margin-bottom:18px; letter-spacing:-0.3px; text-align:center;">Consigli AI</div>
+
+            <div style="backdrop-filter: blur(30px) saturate(200%); -webkit-backdrop-filter: blur(30px) saturate(200%); border-radius: 22px; padding: 20px; border: 1px solid oklch(0.87 0.18 250 / 0.45); margin-bottom: 16px; box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.32), 0 10px 26px oklch(0.87 0.18 250 / 0.15)">
+              <div style="color: oklch(0.67 0 0); font-size:12px; font-weight:600; margin-bottom:8px;">Descrivi il problema di guida</div>
+              <div style="color: oklch(0.97 0 0); font-size:15px; font-weight:500; line-height:1.4; margin-bottom:14px;">"Sottosterzo in staccata forte"</div>
+              <div onClick="{{ askAiConsiglio }}" style="background: oklch(0.87 0.18 250); opacity: {{ askButtonOpacity }}; backdrop-filter: blur(24px) saturate(200%); -webkit-backdrop-filter: blur(24px) saturate(200%); color: oklch(0.03 0 0); text-align:center; padding:14px; border-radius:14px; font-size:14px; font-weight:800; border: none; box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.5), 0 8px 20px oklch(0 0 0 / 0.3); cursor:pointer;">Chiedi consiglio</div>
+              <div style="text-align:center; color: oklch(0.67 0 0); font-size:11.5px; font-weight:600; margin-top:8px;">{{ aiUsageLabel }}</div>
+            </div>
+
+            <div style="background: transparent; border: none; border-radius:18px; padding:18px; margin-bottom:20px;">
+              <div style="color: oklch(0.97 0 0); font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px">Parametro consigliato</div>
+              <div style="color: oklch(0.97 0 0); font-size:18px; font-weight:700; margin-bottom:4px;">Forcella — Compressione</div>
+              <div style="color: oklch(0.87 0.18 250); font-size:14px; font-weight:700; margin-bottom:12px;">Aumenta di 2 click</div>
+              <div style="color: oklch(0.67 0 0); font-size:14px; font-weight:500; line-height:1.5;">Il sottosterzo in staccata è spesso legato a un affondamento eccessivo dell'anteriore: più compressione riduce l'affondamento e stabilizza la forcella in frenata.</div>
+            </div>
+
+            <div style="color: oklch(0.67 0 0); font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.6px; margin-bottom:4px;">Cronologia</div>
+            <sc-for list="{{ aiHistory }}" as="h" hint-placeholder-count="3">
+              <div style="padding:14px 0; border-bottom: 1px solid oklch(0 0 0 / 0.35);">
+                <div style="color: oklch(0.97 0 0); font-size:14px; font-weight:600; margin-bottom:5px;">{{ h.question }}</div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <div style="color: oklch(0.87 0.18 250); font-size:13px; font-weight:600;">{{ h.answer }}</div>
+                  <div style="color: oklch(0.67 0 0); font-size:12px; font-weight:500;">{{ h.time }}</div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="{{ navAi.barStyle }}" onMouseDown="{{ navAi.press }}" onMouseUp="{{ navAi.release }}" onMouseLeave="{{ navAi.release }}" onTouchStart="{{ navAi.press }}" onTouchEnd="{{ navAi.release }}">
+            <div style="position:relative; display:flex;">
+              <div style="{{ navAi.pillStyle }}"></div>
+              <div onClick="{{ navAi.select0 }}" style="flex:1; position:relative; z-index:2; display:flex; align-items:center; justify-content:center; padding:8px 0; cursor:pointer;">
+                <svg width="26" height="26" viewBox="0 0 22 22" style="display:block;"><path d="M3 10 L11 3 L19 10" fill="none" stroke="{{ navAi.color0 }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path><rect x="5" y="10" width="12" height="9" rx="1.5" fill="none" stroke="{{ navAi.color0 }}" stroke-width="2"></rect></svg>
+              </div>
+              <div onClick="{{ navAi.select1 }}" style="flex:1; position:relative; z-index:2; display:flex; align-items:center; justify-content:center; padding:8px 0; cursor:pointer;">
+                <svg width="26" height="26" viewBox="0 0 22 22" style="display:block;"><circle cx="11" cy="11" r="8.5" fill="none" stroke="{{ navAi.color1 }}" stroke-width="2"></circle><line x1="11" y1="11" x2="15" y2="7" stroke="{{ navAi.color1 }}" stroke-width="2" stroke-linecap="round"></line></svg>
+              </div>
+              <div onClick="{{ navAi.select2 }}" style="flex:1; position:relative; z-index:2; display:flex; align-items:center; justify-content:center; padding:8px 0; cursor:pointer;">
+                <svg width="26" height="26" viewBox="0 0 22 22" style="display:block;"><rect x="2" y="4" width="18" height="12" rx="5" fill="none" stroke="{{ navAi.color2 }}" stroke-width="2"></rect><path d="M7 16 L5 20 L10 16Z" fill="{{ navAi.color2 }}"></path></svg>
+              </div>
+              <div onClick="{{ navAi.select3 }}" style="flex:1; position:relative; z-index:2; display:flex; align-items:center; justify-content:center; padding:8px 0; cursor:pointer;">
+                <svg width="26" height="26" viewBox="0 0 22 22" style="display:block;"><circle cx="11" cy="8" r="4" fill="none" stroke="{{ navAi.color3 }}" stroke-width="2"></circle><path d="M4 19c1.5-4 5-5 7-5s5.5 1 7 5" fill="none" stroke="{{ navAi.color3 }}" stroke-width="2" stroke-linecap="round"></path></svg>
+              </div>
+            </div>
+          </div>
+
+          <sc-if value="{{ paywallOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute; inset:0; z-index:90; background: oklch(0 0 0 / 0.55); display:flex; align-items:center; justify-content:center; animation: fadeZoomIn 0.28s ease forwards;">
+              <div style="width:80%; background: oklch(0.1913 0 0); border-radius:20px; border: 1px solid oklch(0.87 0.18 250 / 0.4); padding:24px 20px; box-sizing:border-box; text-align:center;">
+                <div style="color: oklch(0.97 0 0); font-size:17px; font-weight:800; margin-bottom:8px;">Limite piano Free raggiunto</div>
+                <div style="color: oklch(0.67 0 0); font-size:14px; font-weight:500; margin-bottom:22px; line-height:1.4;">{{ paywallMessage }}</div>
+                <div style="display:flex; gap:10px;">
+                  <div onClick="{{ closePaywall }}" style="flex:1; text-align:center; padding:13px; border-radius:12px; background: oklch(1 0 0 / 0.08); border: 1px solid oklch(1 0 0 / 0.2); color: oklch(0.97 0 0); font-size:14px; font-weight:700; cursor:pointer;">Chiudi</div>
+                  <div onClick="{{ paywallUpgrade }}" style="flex:1; text-align:center; padding:13px; border-radius:12px; background: oklch(0.87 0.18 250); color:oklch(0.03 0 0); font-size:14px; font-weight:800; cursor:pointer;">Sblocca Premium</div>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+      </x-import>
+    </div>
+
+    <!-- Profilo -->
+    <div data-screen-label="Profilo">
+      <div style="color:#8a8a8a; font-size:12px; font-weight:600; margin-bottom:10px; text-transform:uppercase; letter-spacing:0.5px;">Profilo — account e abbonamento</div>
+      <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" dark="{{true}}" width="{{380}}" height="{{823}}" hint-size="380,823">
+        <div style="height:100%; display:flex; flex-direction:column; background: oklch(0.173 0 0); font-family:'Inter',sans-serif; position:relative; overflow:hidden;">
+          <div style="flex:1; overflow:auto; padding: 74px 20px 110px;">
+            <div style="color: oklch(0.97 0 0); font-size:29px; font-weight:800; margin-bottom:20px; letter-spacing:-0.3px; text-align:center;">Profilo</div>
+
+            <div style="display:flex; flex-direction:column; align-items:center; margin-bottom:28px;">
+              <div style="width:88px; height:88px; border-radius:50%; overflow:hidden; margin-bottom:14px; border: 2px solid oklch(1 0 0 / 0.16); flex-shrink:0;">
+                <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="profile-avatar" shape="circle" placeholder="Foto profilo" style="color:oklch(0.97 0 0)" hint-size="100%,100%"></x-import>
+              </div>
+              <div style="color: oklch(0.97 0 0); font-size:19px; font-weight:800;">{{ profileNickname }}</div>
+              <div style="color: oklch(0.67 0 0); font-size:13.5px; font-weight:600;">{{ profileEmail }}</div>
+            </div>
+
+            <div style="color: oklch(0.67 0 0); font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.6px; margin-bottom:6px;">Account</div>
+            <div onClick="{{ openEditProfile }}" style="display:flex; align-items:center; justify-content:space-between; padding:16px 0; border-bottom: 1px solid oklch(0 0 0 / 0.35); cursor:pointer;">
+              <div style="color: oklch(0.97 0 0); font-size:15px; font-weight:600;">Nickname ed email</div>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span style="color: oklch(0.67 0 0); font-size:13px; font-weight:600;">{{ profileNickname }}</span>
+                <svg width="8" height="14" viewBox="0 0 8 14"><path d="M1 1l6 6-6 6" fill="none" stroke="oklch(0.67 0 0)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+              </div>
+            </div>
+            <div onClick="{{ openPasswordSheet }}" style="display:flex; align-items:center; justify-content:space-between; padding:16px 0; border-bottom: 1px solid oklch(0 0 0 / 0.35); cursor:pointer;">
+              <div style="color: oklch(0.97 0 0); font-size:15px; font-weight:600;">Password</div>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span style="color: oklch(0.67 0 0); font-size:13px; font-weight:600;">••••••••</span>
+                <svg width="8" height="14" viewBox="0 0 8 14"><path d="M1 1l6 6-6 6" fill="none" stroke="oklch(0.67 0 0)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+              </div>
+            </div>
+
+            <div style="color: oklch(0.67 0 0); font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.6px; margin: 24px 0 6px;">Abbonamento</div>
+            <div onClick="{{ openSubscriptionSheet }}" style="padding:18px; border-radius:18px; border: 1px solid {{ planBorder }}; background: {{ planBg }}; cursor:pointer;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                <div style="color: oklch(0.97 0 0); font-size:16px; font-weight:800;">Piano {{ planLabel }}</div>
+                <div style="color: {{ planBadgeFg }}; font-size:11px; font-weight:800; text-transform:uppercase; padding:5px 10px; border-radius:6px; background: {{ planBadgeBg }};">{{ planStatus }}</div>
+              </div>
+              <div style="color: oklch(0.67 0 0); font-size:13px; font-weight:500; line-height:1.4;">{{ planDescription }}</div>
+            </div>
+
+            <div style="color: oklch(0.67 0 0); font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.6px; margin: 24px 0 6px;">Sessione</div>
+            <div onClick="{{ logout }}" style="padding:16px 0; border-bottom: 1px solid oklch(0 0 0 / 0.35); color: oklch(0.97 0 0); font-size:15px; font-weight:600; cursor:pointer;">Esci</div>
+            <div onClick="{{ openDeleteAccountConfirm }}" style="padding:16px 0; color: oklch(0.63 0.255 25); font-size:15px; font-weight:700; cursor:pointer;">Elimina account</div>
+          </div>
+
+          <div style="{{ navProfile.barStyle }}" onMouseDown="{{ navProfile.press }}" onMouseUp="{{ navProfile.release }}" onMouseLeave="{{ navProfile.release }}" onTouchStart="{{ navProfile.press }}" onTouchEnd="{{ navProfile.release }}">
+            <div style="position:relative; display:flex;">
+              <div style="{{ navProfile.pillStyle }}"></div>
+              <div onClick="{{ navProfile.select0 }}" style="flex:1; position:relative; z-index:2; display:flex; align-items:center; justify-content:center; padding:8px 0; cursor:pointer;">
+                <svg width="26" height="26" viewBox="0 0 22 22" style="display:block;"><path d="M3 10 L11 3 L19 10" fill="none" stroke="{{ navProfile.color0 }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path><rect x="5" y="10" width="12" height="9" rx="1.5" fill="none" stroke="{{ navProfile.color0 }}" stroke-width="2"></rect></svg>
+              </div>
+              <div onClick="{{ navProfile.select1 }}" style="flex:1; position:relative; z-index:2; display:flex; align-items:center; justify-content:center; padding:8px 0; cursor:pointer;">
+                <svg width="26" height="26" viewBox="0 0 22 22" style="display:block;"><circle cx="11" cy="11" r="8.5" fill="none" stroke="{{ navProfile.color1 }}" stroke-width="2"></circle><line x1="11" y1="11" x2="15" y2="7" stroke="{{ navProfile.color1 }}" stroke-width="2" stroke-linecap="round"></line></svg>
+              </div>
+              <div onClick="{{ navProfile.select2 }}" style="flex:1; position:relative; z-index:2; display:flex; align-items:center; justify-content:center; padding:8px 0; cursor:pointer;">
+                <svg width="26" height="26" viewBox="0 0 22 22" style="display:block;"><rect x="2" y="4" width="18" height="12" rx="5" fill="none" stroke="{{ navProfile.color2 }}" stroke-width="2"></rect><path d="M7 16 L5 20 L10 16Z" fill="{{ navProfile.color2 }}"></path></svg>
+              </div>
+              <div onClick="{{ navProfile.select3 }}" style="flex:1; position:relative; z-index:2; display:flex; align-items:center; justify-content:center; padding:8px 0; cursor:pointer;">
+                <svg width="26" height="26" viewBox="0 0 22 22" style="display:block;"><circle cx="11" cy="8" r="4" fill="none" stroke="{{ navProfile.color3 }}" stroke-width="2"></circle><path d="M4 19c1.5-4 5-5 7-5s5.5 1 7 5" fill="none" stroke="{{ navProfile.color3 }}" stroke-width="2" stroke-linecap="round"></path></svg>
+              </div>
+            </div>
+          </div>
+
+          <sc-if value="{{ editProfileOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute; inset:0; z-index:70; background: oklch(0 0 0 / 0.6); display:flex; align-items:flex-end;">
+              <div style="width:100%; background: oklch(0.1913 0 0); border-radius:24px 24px 0 0; border-top: 1px solid oklch(1 0 0 / 0.16); padding: 18px 20px 34px; box-sizing:border-box; max-height:88%; overflow:auto; animation: slideUpIn 0.32s cubic-bezier(.2,.8,.2,1) forwards;">
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:18px;">
+                  <div style="color: oklch(0.97 0 0); font-size:18px; font-weight:800;">Modifica profilo</div>
+                  <div onClick="{{ closeEditProfile }}" style="width:30px; height:30px; border-radius:50%; background: oklch(1 0 0 / 0.1); display:flex; align-items:center; justify-content:center; cursor:pointer;">
+                    <svg width="13" height="13" viewBox="0 0 14 14"><path d="M1 1l12 12M13 1L1 13" stroke="oklch(0.97 0 0)" stroke-width="1.8" stroke-linecap="round"></path></svg>
+                  </div>
+                </div>
+
+                <div style="color: oklch(0.67 0 0); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;">Nickname</div>
+                <input value="{{ editProfileDraft.nickname }}" onChange="{{ editProfileDraft.onNicknameChange }}" style="width:100%; box-sizing:border-box; background: oklch(0 0 0 / 0.4); border: 1px solid oklch(1 0 0 / 0.2); border-radius:12px; padding:11px 12px; color: oklch(0.97 0 0); font-size:15px; font-weight:700; font-family:'Inter',sans-serif; margin-bottom:16px;">
+
+                <div style="color: oklch(0.67 0 0); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;">Email</div>
+                <input value="{{ editProfileDraft.email }}" onChange="{{ editProfileDraft.onEmailChange }}" style="width:100%; box-sizing:border-box; background: oklch(0 0 0 / 0.4); border: 1px solid oklch(1 0 0 / 0.2); border-radius:12px; padding:11px 12px; color: oklch(0.97 0 0); font-size:15px; font-weight:700; font-family:'Inter',sans-serif; margin-bottom:22px;">
+
+                <div onClick="{{ saveEditProfile }}" style="text-align:center; padding:15px; border-radius:14px; background:oklch(0.97 0 0); color:oklch(0.03 0 0); font-size:15px; font-weight:800; cursor:pointer;">Salva</div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ passwordSheetOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute; inset:0; z-index:70; background: oklch(0 0 0 / 0.6); display:flex; align-items:flex-end;">
+              <div style="width:100%; background: oklch(0.1913 0 0); border-radius:24px 24px 0 0; border-top: 1px solid oklch(1 0 0 / 0.16); padding: 18px 20px 34px; box-sizing:border-box; max-height:88%; overflow:auto; animation: slideUpIn 0.32s cubic-bezier(.2,.8,.2,1) forwards;">
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:18px;">
+                  <div style="color: oklch(0.97 0 0); font-size:18px; font-weight:800;">Modifica password</div>
+                  <div onClick="{{ closePasswordSheet }}" style="width:30px; height:30px; border-radius:50%; background: oklch(1 0 0 / 0.1); display:flex; align-items:center; justify-content:center; cursor:pointer;">
+                    <svg width="13" height="13" viewBox="0 0 14 14"><path d="M1 1l12 12M13 1L1 13" stroke="oklch(0.97 0 0)" stroke-width="1.8" stroke-linecap="round"></path></svg>
+                  </div>
+                </div>
+
+                <div style="color: oklch(0.67 0 0); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;">Password attuale</div>
+                <input type="password" value="{{ passwordDraft.current }}" onChange="{{ passwordDraft.onCurrentChange }}" style="width:100%; box-sizing:border-box; background: oklch(0 0 0 / 0.4); border: 1px solid oklch(1 0 0 / 0.2); border-radius:12px; padding:11px 12px; color: oklch(0.97 0 0); font-size:15px; font-weight:700; font-family:'Inter',sans-serif; margin-bottom:16px;">
+
+                <div style="color: oklch(0.67 0 0); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;">Nuova password</div>
+                <input type="password" value="{{ passwordDraft.next }}" onChange="{{ passwordDraft.onNextChange }}" style="width:100%; box-sizing:border-box; background: oklch(0 0 0 / 0.4); border: 1px solid oklch(1 0 0 / 0.2); border-radius:12px; padding:11px 12px; color: oklch(0.97 0 0); font-size:15px; font-weight:700; font-family:'Inter',sans-serif; margin-bottom:16px;">
+
+                <div style="color: oklch(0.67 0 0); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;">Conferma nuova password</div>
+                <input type="password" value="{{ passwordDraft.confirm }}" onChange="{{ passwordDraft.onConfirmChange }}" style="width:100%; box-sizing:border-box; background: oklch(0 0 0 / 0.4); border: 1px solid oklch(1 0 0 / 0.2); border-radius:12px; padding:11px 12px; color: oklch(0.97 0 0); font-size:15px; font-weight:700; font-family:'Inter',sans-serif; margin-bottom:22px;">
+
+                <div onClick="{{ savePassword }}" style="text-align:center; padding:15px; border-radius:14px; background:oklch(0.97 0 0); color:oklch(0.03 0 0); font-size:15px; font-weight:800; cursor:pointer;">Salva password</div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ subscriptionSheetOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute; inset:0; z-index:70; background: oklch(0 0 0 / 0.6); display:flex; align-items:flex-end;">
+              <div style="width:100%; background: oklch(0.1913 0 0); border-radius:24px 24px 0 0; border-top: 1px solid oklch(1 0 0 / 0.16); padding: 18px 20px 34px; box-sizing:border-box; max-height:88%; overflow:auto; animation: slideUpIn 0.32s cubic-bezier(.2,.8,.2,1) forwards;">
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:18px;">
+                  <div style="color: oklch(0.97 0 0); font-size:18px; font-weight:800;">Abbonamento</div>
+                  <div onClick="{{ closeSubscriptionSheet }}" style="width:30px; height:30px; border-radius:50%; background: oklch(1 0 0 / 0.1); display:flex; align-items:center; justify-content:center; cursor:pointer;">
+                    <svg width="13" height="13" viewBox="0 0 14 14"><path d="M1 1l12 12M13 1L1 13" stroke="oklch(0.97 0 0)" stroke-width="1.8" stroke-linecap="round"></path></svg>
+                  </div>
+                </div>
+
+                <div style="color: oklch(0.67 0 0); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:10px;">Confronto piani</div>
+                <div style="display:flex; flex-direction:column; margin-bottom:20px;">
+                  <div style="display:grid; grid-template-columns: 1.3fr 1fr 1fr; gap:8px; padding-bottom:8px; border-bottom: 1px solid oklch(1 0 0 / 0.16); margin-bottom:4px;">
+                    <div></div>
+                    <div style="color: oklch(0.67 0 0); font-size:11px; font-weight:800; text-transform:uppercase; text-align:center;">Free</div>
+                    <div style="color: oklch(0.87 0.18 250); font-size:11px; font-weight:800; text-transform:uppercase; text-align:center;">Premium</div>
+                  </div>
+                  <sc-for list="{{ planFeatures }}" as="f" hint-placeholder-count="3">
+                    <div style="display:grid; grid-template-columns: 1.3fr 1fr 1fr; gap:8px; padding:12px 0; border-bottom: 1px solid oklch(0 0 0 / 0.3); align-items:center;">
+                      <div style="color: oklch(0.97 0 0); font-size:13.5px; font-weight:700;">{{ f.label }}</div>
+                      <div style="color: oklch(0.67 0 0); font-size:12.5px; font-weight:600; text-align:center;">{{ f.free }}</div>
+                      <div style="color: oklch(0.87 0.18 250); font-size:12.5px; font-weight:700; text-align:center;">{{ f.premium }}</div>
+                    </div>
+                  </sc-for>
+                </div>
+
+                <sc-if value="{{ planIsPremium }}" hint-placeholder-val="{{ false }}">
+                  <div style="text-align:center; padding:15px; border-radius:14px; background: oklch(0.87 0.18 250 / 0.12); border: 1px solid oklch(0.87 0.18 250 / 0.4); color: oklch(0.87 0.18 250); font-size:14.5px; font-weight:800;">Premium sbloccato — pagamento unico effettuato</div>
+                </sc-if>
+                <sc-if value="{{ planIsFree }}" hint-placeholder-val="{{ true }}">
+                  <div onClick="{{ purchasePremium }}" style="text-align:center; padding:15px; border-radius:14px; background:oklch(0.97 0 0); color:oklch(0.03 0 0); font-size:15px; font-weight:800; cursor:pointer;">Sblocca Premium — €9,99 una tantum</div>
+                </sc-if>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ deleteAccountConfirmOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute; inset:0; z-index:80; background: oklch(0 0 0 / 0.55); display:flex; align-items:center; justify-content:center; animation: fadeZoomIn 0.28s ease forwards;">
+              <div style="width:78%; background: oklch(0.1913 0 0); border-radius:20px; border: 1px solid oklch(1 0 0 / 0.16); padding:24px 20px; box-sizing:border-box; text-align:center;">
+                <div style="color: oklch(0.97 0 0); font-size:17px; font-weight:800; margin-bottom:8px;">Eliminare l'account</div>
+                <div style="color: oklch(0.67 0 0); font-size:14px; font-weight:500; margin-bottom:22px; line-height:1.4;">Questa azione è definitiva: perderai moto, sessioni e checklist salvate. Non può essere annullata.</div>
+                <div style="display:flex; gap:10px;">
+                  <div onClick="{{ closeDeleteAccountConfirm }}" style="flex:1; text-align:center; padding:13px; border-radius:12px; background: oklch(1 0 0 / 0.08); border: 1px solid oklch(1 0 0 / 0.2); color: oklch(0.97 0 0); font-size:14px; font-weight:700; cursor:pointer;">Annulla</div>
+                  <div onClick="{{ confirmDeleteAccount }}" style="flex:1; text-align:center; padding:13px; border-radius:12px; background: oklch(0.63 0.255 25); color:oklch(0.97 0 0); font-size:14px; font-weight:800; cursor:pointer;">Elimina</div>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+      </x-import>
+    </div>
+
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+
+class Component extends DCLogic {
+  bikesList = ['Yamaha R6', 'Ducati Panigale V2', '__ADD__'];
+  planFeatures = [
+    { label: 'Moto in garage', free: '1 moto', premium: 'Illimitate' },
+    { label: 'Consigli AI', free: '1 al giorno', premium: 'Illimitati' },
+    { label: 'Run per sessione', free: 'Max 3 al giorno', premium: 'Illimitati' },
+  ];
+  tracksList = ['Mugello', 'Misano', '__ADD__'];
+  weatherList = ['sole', 'nuvole', 'pioggia'];
+  runsList = ['Run 1', 'Run 2', 'Run 3', '__ADD__'];
+
+  maintStatusStyle(daysSinceService, intervalDays) {
+    const ratio = intervalDays > 0 ? daysSinceService / intervalDays : 0;
+    if (ratio >= 1) return { status: 'Scaduta', color: 'oklch(0.63 0.255 25)', badgeBg: 'oklch(0.63 0.255 25 / 0.16)' };
+    if (ratio >= 0.8) return { status: 'In scadenza', color: 'oklch(0.78 0.15 70)', badgeBg: 'oklch(0.78 0.15 70 / 0.16)' };
+    return { status: 'OK', color: 'oklch(0.67 0 0)', badgeBg: 'oklch(1 0 0 / 0.16)' };
+  }
+
+  enrichMaint(bikeId, m) {
+    const s = this.maintStatusStyle(m.daysSinceService, m.intervalDays);
+    return {
+      ...m, ...s,
+      last: m.daysSinceService,
+      onEditInterval: () => this.editMaintInterval(bikeId, m.name),
+      onMarkDoneToday: () => this.markMaintDone(bikeId, m.name, 0),
+      onMarkDonePast: () => this.markMaintDonePastPrompt(bikeId, m.name),
+    };
+  }
+
+  editMaintInterval(bikeId, name) {
+    const bike = this.state.bikes.find(b => b.id === bikeId);
+    const item = bike && bike.maintenance.find(m => m.name === name);
+    if (!item) return;
+    const val = window.prompt('Ogni quanti giorni va eseguita questa manutenzione?', item.intervalDays);
+    const n = parseInt(val, 10);
+    if (val === null || isNaN(n) || n <= 0) return;
+    this.setState(s => ({ bikes: s.bikes.map(b => b.id === bikeId ? { ...b, maintenance: b.maintenance.map(mm => mm.name === name ? { ...mm, intervalDays: n } : mm) } : b) }));
+  }
+
+  markMaintDone(bikeId, name, daysAgo) {
+    this.setState(s => ({ bikes: s.bikes.map(b => b.id === bikeId ? { ...b, maintenance: b.maintenance.map(mm => mm.name === name ? { ...mm, daysSinceService: daysAgo } : mm) } : b) }));
+  }
+
+  markMaintDonePastPrompt(bikeId, name) {
+    const val = window.prompt('Eseguita quanti giorni fa?', '1');
+    const n = parseInt(val, 10);
+    if (val === null || isNaN(n) || n < 0) return;
+    this.markMaintDone(bikeId, name, n);
+  }
+
+  sortMaintEnriched(bikeId, list) {
+    const order = { 'Scaduta': 0, 'In scadenza': 1, 'OK': 2 };
+    return list.map(m => this.enrichMaint(bikeId, m)).sort((a, b) => order[a.status] - order[b.status]);
+  }
+
+  cardColorOptions = [
+    { value: 'oklch(0.87 0.18 250)', name: 'Blu' },
+    { value: 'oklch(0.63 0.255 25)', name: 'Rosso' },
+    { value: 'oklch(0.78 0.15 70)', name: 'Oro' },
+    { value: 'oklch(0.75 0.17 145)', name: 'Verde' },
+    { value: 'oklch(0.72 0.19 300)', name: 'Viola' },
+  ];
+  rarityLevels = ['Comune', 'Rara', 'Leggendaria'];
+
+  openEditModal(id, e) {
+    if (e) e.stopPropagation();
+    const bike = this.state.bikes.find(b => b.id === id);
+    if (!bike) return;
+    this.setState({ editModalBikeId: id, editModalDraft: { name: bike.name, subtitle: bike.subtitle, cardColor: bike.cardColor, rarity: bike.rarity } });
+  }
+
+  closeEditModal() {
+    this.setState({ editModalBikeId: null, editModalDraft: null });
+  }
+
+  updateEditDraft(key, value) {
+    this.setState(s => ({ editModalDraft: { ...s.editModalDraft, [key]: value } }));
+  }
+
+  saveEditDraft() {
+    const id = this.state.editModalBikeId;
+    const draft = this.state.editModalDraft;
+    if (!id || !draft) return;
+    if (!draft.name.trim()) return;
+    this.setState(s => ({
+      bikes: s.bikes.map(b => b.id === id ? { ...b, name: draft.name.trim(), subtitle: draft.subtitle.trim(), cardColor: draft.cardColor, rarity: draft.rarity } : b),
+      editModalBikeId: null,
+      editModalDraft: null,
+    }));
+  }
+
+  editBike(id, e) {
+    this.openEditModal(id, e);
+  }
+
+  deleteBike(id, e) {
+    if (e) e.stopPropagation();
+    this.setState({ deleteConfirmBikeId: id });
+  }
+
+  cancelDeleteBike() {
+    this.setState({ deleteConfirmBikeId: null });
+  }
+
+  confirmDeleteBike() {
+    const id = this.state.deleteConfirmBikeId;
+    if (!id) return;
+    this.setState(s => {
+      const bikes = s.bikes.filter(b => b.id !== id);
+      const patch = { bikes, deleteConfirmBikeId: null };
+      if (s.selectedBikeId === id) {
+        patch.homeView = 'list';
+        patch.selectedBikeId = bikes.length ? bikes[0].id : null;
+      }
+      return patch;
+    });
+  }
+
+  openRunDetail() {
+    this.setState({ runDetailOpen: true });
+  }
+
+  openEditProfile() {
+    this.setState(s => ({ editProfileOpen: true, editProfileDraft: { nickname: s.profileNickname, email: s.profileEmail } }));
+  }
+  closeEditProfile() {
+    this.setState({ editProfileOpen: false, editProfileDraft: null });
+  }
+  updateEditProfileDraft(key, value) {
+    this.setState(s => ({ editProfileDraft: { ...s.editProfileDraft, [key]: value } }));
+  }
+  saveEditProfile() {
+    const d = this.state.editProfileDraft;
+    if (!d || !d.nickname.trim()) return;
+    this.setState({ profileNickname: d.nickname.trim(), profileEmail: d.email.trim(), editProfileOpen: false, editProfileDraft: null });
+  }
+
+  openPasswordSheet() {
+    this.setState({ passwordSheetOpen: true, passwordDraft: { current: '', next: '', confirm: '' } });
+  }
+  closePasswordSheet() {
+    this.setState({ passwordSheetOpen: false, passwordDraft: null });
+  }
+  updatePasswordDraft(key, value) {
+    this.setState(s => ({ passwordDraft: { ...s.passwordDraft, [key]: value } }));
+  }
+  savePassword() {
+    const d = this.state.passwordDraft;
+    if (!d || !d.next || d.next !== d.confirm) return;
+    this.setState({ passwordSheetOpen: false, passwordDraft: null });
+  }
+
+  openSubscriptionSheet() {
+    this.setState({ subscriptionSheetOpen: true });
+  }
+  closeSubscriptionSheet() {
+    this.setState({ subscriptionSheetOpen: false });
+  }
+  purchasePremium() {
+    this.setState({ profilePlan: 'premium', subscriptionSheetOpen: false });
+  }
+
+  openPaywall(message) {
+    this.setState({ paywallOpen: true, paywallMessage: message });
+  }
+  closePaywall() {
+    this.setState({ paywallOpen: false });
+  }
+  paywallUpgrade() {
+    this.setState({ paywallOpen: false, subscriptionSheetOpen: true });
+  }
+
+  addBikeAttempt() {
+    if (this.state.profilePlan === 'free' && this.state.bikes.length >= 1) {
+      this.openPaywall('Il piano Free include 1 sola moto in garage. Passa a Premium per moto illimitate.');
+      return;
+    }
+    const name = window.prompt('Nome della nuova moto');
+    if (!name || !name.trim()) return;
+    this.setState(s => ({ bikes: [...s.bikes, { id: 'b' + Date.now(), name: name.trim(), subtitle: '', rarity: 'Comune', cardColor: 'oklch(0.87 0.18 250)', maintenance: [] }] }));
+  }
+
+  bikeNextAttempt() {
+    const nextIdx = (this.state.bikeIdx + 1) % this.bikesList.length;
+    const nextName = this.bikesList[nextIdx];
+    if (nextName === '__ADD__' && this.state.profilePlan === 'free' && this.state.bikes.length >= 1) {
+      this.openPaywall('Il piano Free include 1 sola moto in garage. Passa a Premium per moto illimitate.');
+      return;
+    }
+    this.cycle('bikeIdx', this.bikesList, 1);
+  }
+
+  runNextAttempt() {
+    const nextIdx = (this.state.runIdx + 1) % this.runsList.length;
+    const nextName = this.runsList[nextIdx];
+    if (nextName === '__ADD__' && this.state.profilePlan === 'free') {
+      this.openPaywall('Il piano Free include massimo 3 run per sessione. Passa a Premium per run illimitati.');
+      return;
+    }
+    this.cycle('runIdx', this.runsList, 1);
+  }
+
+  askAiConsiglio() {
+    if (this.state.profilePlan === 'free' && this.state.aiUsedToday >= 1) {
+      this.openPaywall('Hai esaurito il consiglio AI gratuito di oggi. Passa a Premium per consigli illimitati.');
+      return;
+    }
+    this.setState(s => ({ aiUsedToday: s.aiUsedToday + 1 }));
+  }
+
+  setAuthDemoLoggedIn(val) {
+    this.setState({ authIsLoggedIn: val, authView: val ? 'login' : 'login' });
+  }
+  selectAuthTab(view) {
+    this.setState({ authView: view });
+  }
+  updateLoginDraft(key, value) {
+    this.setState(s => ({ loginDraft: { ...s.loginDraft, [key]: value } }));
+  }
+  submitLogin() {
+    const d = this.state.loginDraft;
+    if (!d.email.trim() || !d.password) return;
+    this.setState({ authIsLoggedIn: true, authView: 'done' });
+  }
+  updateRegisterDraft(key, value) {
+    this.setState(s => ({ registerDraft: { ...s.registerDraft, [key]: value } }));
+  }
+  submitRegister() {
+    const d = this.state.registerDraft;
+    if (!d.nickname.trim() || !d.email.trim() || !d.password || d.password !== d.confirm) return;
+    this.setState(s => ({ profileNickname: d.nickname.trim(), profileEmail: d.email.trim(), authView: 'premiumOffer' }));
+  }
+  socialAuth(provider) {
+    if (this.state.authView === 'register') {
+      this.setState({ authView: 'premiumOffer' });
+    } else {
+      this.setState({ authIsLoggedIn: true, authView: 'done' });
+    }
+  }
+  finishOnboarding(withPremium) {
+    this.setState({
+      authIsLoggedIn: true,
+      authView: 'done',
+      profilePlan: withPremium ? 'premium' : this.state.profilePlan,
+    });
+  }
+
+  openDeleteAccountConfirm() {
+    this.setState({ deleteAccountConfirmOpen: true });
+  }
+  closeDeleteAccountConfirm() {
+    this.setState({ deleteAccountConfirmOpen: false });
+  }
+  confirmDeleteAccount() {
+    this.setState({ deleteAccountConfirmOpen: false });
+  }
+
+  closeRunDetail() {
+    this.setState({ runDetailOpen: false });
+  }
+
+  toggleChecklistItem(id) {
+    this.setState(s => ({ checklist: s.checklist.map(it => it.id === id ? { ...it, checked: !it.checked } : it) }));
+  }
+
+  deleteChecklistItem(id) {
+    this.setState(s => ({ checklist: s.checklist.filter(it => it.id !== id) }));
+  }
+
+  addChecklistItemPrompt() {
+    const label = window.prompt('Nuova voce checklist');
+    if (label === null || label.trim() === '') return;
+    this.setState(s => ({ checklist: [...s.checklist, { id: 'c' + Date.now(), label: label.trim(), checked: false }] }));
+  }
+
+  state = {
+    selectedCategory: 'sospensioni',
+    selectedSub: { sospensioni: 'forcella', gomme: 'pneuAnt' },
+    notes: {
+      forcella: 'Sottosterzo leggero in staccata forte. Provare +2 click compressione forcella prossimo run.',
+      mono: '',
+      pneuAnt: '',
+      pneuPost: '',
+      rapporto: '',
+      elettronica: '',
+    },
+    generale: { ora: '14:32', temperatura: '24°C', bestLap: '1:52.340', giri: '8' },
+    runWeatherIdx: 0,
+    navActive: { home: 0, setup: 1, ai: 2, profile: 3 },
+    navPressed: { home: false, setup: false, ai: false, profile: false },
+    profileNickname: 'MarcoR',
+    profileEmail: 'marco.rossi@email.com',
+    profilePlan: 'free',
+    editProfileOpen: false,
+    editProfileDraft: null,
+    passwordSheetOpen: false,
+    passwordDraft: null,
+    subscriptionSheetOpen: false,
+    deleteAccountConfirmOpen: false,
+    aiUsedToday: 0,
+    paywallOpen: false,
+    paywallMessage: '',
+    authIsLoggedIn: false,
+    authView: 'login',
+    loginDraft: { email: '', password: '' },
+    registerDraft: { nickname: '', email: '', password: '', confirm: '' },
+    catBarPressed: false,
+    homeView: 'list',
+    pickerField: null,
+    pickerIdx: [],
+    checklistOpen: false,
+    setupView: 'list',
+    filterBikeIdx: 0,
+    filterTrackIdx: 0,
+    filterDateIdx: 0,
+    selectedBikeId: 'r6',
+    editModalBikeId: null,
+    editModalDraft: null,
+    bikes: [
+      { id: 'r6', name: 'Yamaha R6', subtitle: 'Supersport 600', rarity: 'Rara', cardColor: 'oklch(0.87 0.18 250)', maintenance: [
+        { name: 'Pastiglie freno ant.', daysSinceService: 95, intervalDays: 90 },
+        { name: 'Olio motore', daysSinceService: 25, intervalDays: 30 },
+        { name: 'Catena', daysSinceService: 3, intervalDays: 10 },
+        { name: 'Gomme (set)', daysSinceService: 5, intervalDays: 15 },
+      ]},
+      { id: 'panigale', name: 'Ducati Panigale V2', subtitle: 'Superbike', rarity: 'Leggendaria', cardColor: 'oklch(0.63 0.255 25)', maintenance: [
+        { name: 'Pastiglie freno post.', daysSinceService: 120, intervalDays: 100 },
+        { name: 'Cinghie distribuzione', daysSinceService: 280, intervalDays: 300 },
+        { name: 'Filtro aria', daysSinceService: 15, intervalDays: 60 },
+        { name: 'Olio motore', daysSinceService: 10, intervalDays: 30 },
+      ]},
+    ],
+    checklist: [
+      { id: 'c1', label: 'Borsone attrezzi', checked: true },
+      { id: 'c2', label: 'Termocoperte', checked: true },
+      { id: 'c3', label: 'Prolunga elettrica', checked: false },
+      { id: 'c4', label: 'Kit forature', checked: false },
+      { id: 'c5', label: 'Casco e tuta di riserva', checked: false },
+      { id: 'c6', label: 'Registratore dati / GoPro', checked: false },
+    ],
+    bikeIdx: 0,
+    trackIdx: 0,
+    weatherIdx: 0,
+    runIdx: 2,
+    numeric: {
+      'forcella.Molla': 9.5, 'forcella.Altezza': 8, 'forcella.Compressione': 12, 'forcella.Estensione': 10, 'forcella.Precarico': 5,
+      'mono.Molla': 95, 'mono.Altezza': 10, 'mono.Compressione': 14, 'mono.Estensione': 11, 'mono.Precarico': 6,
+      'pneuAnt.Giri': 8, 'pneuAnt.PressioneIngresso': 1.9, 'pneuAnt.PressioneUscita': 2.1,
+      'pneuPost.Giri': 8, 'pneuPost.PressioneIngresso': 1.7, 'pneuPost.PressioneUscita': 1.9,
+      'rapporto.Pignone': 16, 'rapporto.Corona': 45, 'rapporto.Passo catena': 525,
+      'elettronica.Mappa': 2, 'elettronica.TC': 4, 'elettronica.EngineBrake': 2, 'elettronica.AntiWheelie': 3,
+    },
+  };
+
+  selectCategory(id) {
+    this.setState({ selectedCategory: id });
+  }
+
+  selectSub(catId, subId) {
+    this.setState(s => ({ selectedSub: { ...s.selectedSub, [catId]: subId } }));
+  }
+
+  updateGenerale(key, value) {
+    this.setState(s => ({ generale: { ...s.generale, [key]: value } }));
+  }
+
+  pickerConfigs = {
+    ora: { label: 'Ora', columns: [{ min: 0, max: 23, pad: 2 }, { min: 0, max: 59, pad: 2 }], seps: [null, ':'] },
+    temperatura: { label: 'Temperatura', columns: [{ min: -10, max: 50, pad: 0, suffix: '°C' }], seps: [null] },
+    bestLap: { label: 'Best lap', columns: [{ min: 0, max: 9, pad: 0 }, { min: 0, max: 59, pad: 2 }, { min: 0, max: 999, pad: 3 }], seps: [null, ':', '.'] },
+    giri: { label: 'Giri', columns: [{ min: 0, max: 99, pad: 0 }], seps: [null] },
+  };
+
+  pad(n, len) { return String(n).padStart(len, '0'); }
+
+  parsePickerValue(field, value) {
+    if (field === 'ora') { const [h, m] = value.split(':').map(Number); return [h || 0, m || 0]; }
+    if (field === 'temperatura') { return [parseInt(value) || 0]; }
+    if (field === 'bestLap') { const mm = value.match(/(\d+):(\d+)\.(\d+)/); return mm ? [+mm[1], +mm[2], +mm[3]] : [1, 0, 0]; }
+    if (field === 'giri') { return [parseInt(value) || 0]; }
+    return [0];
+  }
+
+  formatPickerValue(field, nums) {
+    if (field === 'ora') return this.pad(nums[0], 2) + ':' + this.pad(nums[1], 2);
+    if (field === 'temperatura') return nums[0] + '°C';
+    if (field === 'bestLap') return nums[0] + ':' + this.pad(nums[1], 2) + '.' + this.pad(nums[2], 3);
+    if (field === 'giri') return String(nums[0]);
+    return '';
+  }
+
+  openPicker(field) {
+    const cfg = this.pickerConfigs[field];
+    const nums = this.parsePickerValue(field, this.state.generale[field]);
+    const idx = nums.map((v, i) => Math.min(Math.max(v - cfg.columns[i].min, 0), cfg.columns[i].max - cfg.columns[i].min));
+    this.setState({ pickerField: field, pickerIdx: idx });
+  }
+
+  closePicker() {
+    this.setState({ pickerField: null });
+  }
+
+  setPickerColIdx(i, idx) {
+    this.setState(s => {
+      const arr = [...s.pickerIdx];
+      arr[i] = idx;
+      return { pickerIdx: arr };
+    });
+  }
+
+  onColScroll(i, e) {
+    const itemH = 40;
+    const idx = Math.round(e.target.scrollTop / itemH);
+    this.setPickerColIdx(i, idx);
+  }
+
+  confirmPicker() {
+    const field = this.state.pickerField;
+    if (!field) return;
+    const cfg = this.pickerConfigs[field];
+    const nums = this.state.pickerIdx.map((idx, i) => idx + cfg.columns[i].min);
+    this.updateGenerale(field, this.formatPickerValue(field, nums));
+    this.closePicker();
+  }
+
+  step(key, delta) {
+    this.setState(s => ({ numeric: { ...s.numeric, [key]: Math.round((s.numeric[key] + delta) * 100) / 100 } }));
+  }
+
+  navBar(screenKey, count) {
+    const activeIdx = this.state.navActive[screenKey];
+    const pressed = this.state.navPressed[screenKey];
+    const cellPct = 100 / count;
+    const inset = 0.14;
+    const pillW = cellPct * (1 - inset);
+    const pillL = activeIdx * cellPct + (cellPct - pillW) / 2;
+    return {
+      pillStyle: 'position:absolute; top:-4px; bottom:-4px; left:' + pillL + '%; width:' + pillW + '%; border-radius:38% / 50%; background: oklch(1 0 0 / 0.35); transition: left 0.32s cubic-bezier(0.34,1.56,0.64,1), transform 0.18s ease; transform:' + (pressed ? 'scale(1.08)' : 'scale(1)') + '; z-index:1;',
+      barStyle: 'position:absolute; left:14px; right:14px; bottom:16px; z-index:20; border-radius:999px; padding:11px 6px; background: oklch(0 0 0 / 0.38); backdrop-filter: blur(32px) saturate(200%); -webkit-backdrop-filter: blur(32px) saturate(200%); border: 1px solid oklch(1 0 0 / 0.22); box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.3), inset 0 -1px 0 oklch(0 0 0 / 0.15), 0 12px 30px oklch(0 0 0 / 0.4); transform-origin: center bottom; transition: transform 0.18s ease; transform:' + (pressed ? 'scale(0.828)' : 'scale(0.8)') + ';',
+      colorFor: () => 'oklch(0.97 0 0)',
+      select: (i) => this.setState(s => ({ navActive: { ...s.navActive, [screenKey]: i } })),
+      press: () => this.setState(s => ({ navPressed: { ...s.navPressed, [screenKey]: true } })),
+      release: () => this.setState(s => ({ navPressed: { ...s.navPressed, [screenKey]: false } })),
+    };
+  }
+
+  startNewSession() {
+    const bikeName = this.bikesList[this.state.bikeIdx];
+    this.setState(s => ({
+      setupView: 'list',
+      bikes: s.bikes.map(b => b.name === bikeName ? { ...b, maintenance: b.maintenance.map(m => ({ ...m, daysSinceService: m.daysSinceService + 1 })) } : b),
+    }));
+  }
+
+  cycle(field, list, delta) {
+    this.setState(s => {
+      const len = list.length;
+      const next = (s[field] + delta + len) % len;
+      return { [field]: next };
+    });
+  }
+
+  carouselVals() {
+    const bikeName = this.bikesList[this.state.bikeIdx];
+    const trackName = this.tracksList[this.state.trackIdx];
+    const weatherId = this.weatherList[this.state.weatherIdx];
+    const runName = this.runsList[this.state.runIdx];
+    const weatherLabels = { sole: 'Soleggiato', nuvole: 'Nuvoloso', pioggia: 'Pioggia' };
+    return {
+      bikeIsAdd: bikeName === '__ADD__',
+      bikeIsNotAdd: bikeName !== '__ADD__',
+      bikeName,
+      bikePrev: () => this.cycle('bikeIdx', this.bikesList, -1),
+      bikeNext: () => this.bikeNextAttempt(),
+
+      trackIsAdd: trackName === '__ADD__',
+      trackIsNotAdd: trackName !== '__ADD__',
+      trackName,
+      trackPrev: () => this.cycle('trackIdx', this.tracksList, -1),
+      trackNext: () => this.cycle('trackIdx', this.tracksList, 1),
+
+      isSun: weatherId === 'sole',
+      isClouds: weatherId === 'nuvole',
+      isRain: weatherId === 'pioggia',
+      weatherLabel: weatherLabels[weatherId],
+      weatherPrev: () => this.cycle('weatherIdx', this.weatherList, -1),
+      weatherNext: () => this.cycle('weatherIdx', this.weatherList, 1),
+
+      runIsAdd: runName === '__ADD__',
+      runIsNotAdd: runName !== '__ADD__',
+      runName,
+      runPrev: () => this.cycle('runIdx', this.runsList, -1),
+      runNext: () => this.runNextAttempt(),
+    };
+  }
+
+  renderVals() {
+    const allSessionsData = [
+      { track: 'Mugello', date: 'Oggi', daysAgo: 0, bike: 'Yamaha R6', weather: 'Soleggiato', runs: 5, bestLap: '1:52.340' },
+      { track: 'Misano', date: '3 giorni fa', daysAgo: 3, bike: 'Ducati Panigale V2', weather: 'Variabile', runs: 4, bestLap: '1:33.210' },
+      { track: 'Mugello', date: '1 settimana fa', daysAgo: 7, bike: 'Yamaha R6', weather: 'Nuvoloso', runs: 6, bestLap: '1:53.102' },
+      { track: 'Vallelunga', date: '2 settimane fa', daysAgo: 14, bike: 'Yamaha R6', weather: 'Pioggia', runs: 3, bestLap: '1:03.554' },
+      { track: 'Misano', date: '3 settimane fa', daysAgo: 21, bike: 'Ducati Panigale V2', weather: 'Soleggiato', runs: 5, bestLap: '1:32.870' },
+      { track: 'Mugello', date: '1 mese fa', daysAgo: 30, bike: 'Yamaha R6', weather: 'Soleggiato', runs: 7, bestLap: '1:51.998' },
+      { track: 'Vallelunga', date: '6 settimane fa', daysAgo: 42, bike: 'Ducati Panigale V2', weather: 'Nuvoloso', runs: 4, bestLap: '1:04.220' },
+    ];
+    const parseLap = (str) => {
+      const m = str.match(/(\d+):(\d+)\.(\d+)/);
+      return m ? (+m[1] * 60 + +m[2] + +m[3] / 1000) : Infinity;
+    };
+    const trackStats = {};
+    allSessionsData.forEach(s => {
+      const sec = parseLap(s.bestLap);
+      const st = trackStats[s.track] || (trackStats[s.track] = { min: sec, max: sec });
+      st.min = Math.min(st.min, sec);
+      st.max = Math.max(st.max, sec);
+    });
+    const lapColor = (track, bestLapStr) => {
+      const sec = parseLap(bestLapStr);
+      const st = trackStats[track];
+      if (!st) return 'oklch(0.78 0.15 70)';
+      return sec === st.min ? 'oklch(0.63 0.255 25)'
+        : sec === st.max ? 'oklch(0.67 0 0)'
+        : 'oklch(0.78 0.15 70)';
+    };
+    const weatherIcon = (w) => ({
+      isSun: w === 'Soleggiato',
+      isClouds: w === 'Nuvoloso' || w === 'Variabile',
+      isRain: w === 'Pioggia',
+    });
+    const withDot = (s) => ({ ...s, dotColor: lapColor(s.track, s.bestLap), ...weatherIcon(s.weather), onClick: () => this.openRunDetail() });
+
+    const makeNav = (screenKey) => {
+      const b = this.navBar(screenKey, 4);
+      return {
+        barStyle: b.barStyle,
+        pillStyle: b.pillStyle,
+        color0: b.colorFor(0), color1: b.colorFor(1), color2: b.colorFor(2), color3: b.colorFor(3),
+        select0: () => b.select(0), select1: () => b.select(1), select2: () => b.select(2), select3: () => b.select(3),
+        press: b.press, release: b.release,
+      };
+    };
+    const navHome = makeNav('home');
+    const navSetup = makeNav('setup');
+    const navAi = makeNav('ai');
+    const navProfile = makeNav('profile');
+
+    const planIsPremium = this.state.profilePlan === 'premium';
+
+    const catBar = (() => {
+      const idx = Math.max(0, ['sospensioni', 'gomme', 'rapporto', 'elettronica'].indexOf(this.state.selectedCategory));
+      const count = 4;
+      const cellPct = 100 / count;
+      const inset = 0.14;
+      const pillW = cellPct * (1 - inset);
+      const pillL = idx * cellPct + (cellPct - pillW) / 2;
+      const pressed = this.state.catBarPressed;
+      return {
+        pillStyle: 'position:absolute; top:-2px; bottom:-2px; left:' + pillL + '%; width:' + pillW + '%; border-radius:38% / 50%; background: oklch(1 0 0 / 0.35); transition: left 0.32s cubic-bezier(0.34,1.56,0.64,1), transform 0.18s ease; transform:' + (pressed ? 'scale(1.08)' : 'scale(1)') + '; z-index:1;',
+        barStyle: 'padding:9px 5px; border-radius:999px; background: oklch(0 0 0 / 0.34); backdrop-filter: blur(32px) saturate(200%); -webkit-backdrop-filter: blur(32px) saturate(200%); border: 1px solid oklch(1 0 0 / 0.22); box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.3), inset 0 -1px 0 oklch(0 0 0 / 0.15), 0 12px 30px oklch(0 0 0 / 0.4); margin-bottom:18px; transition: transform 0.18s ease; transform:' + (pressed ? 'scale(1.02)' : 'scale(1)') + ';',
+        press: () => this.setState({ catBarPressed: true }),
+        release: () => this.setState({ catBarPressed: false }),
+      };
+    })();
+
+    const activeBg = 'linear-gradient(160deg, oklch(1 0 0 / 0.24), oklch(1 0 0 / 0.07))';
+    const activeBorder = 'transparent';
+    const activeFg = 'oklch(0.97 0 0)';
+    const idleBg = 'oklch(0 0 0 / 0.3)';
+    const idleFg = 'oklch(0.97 0 0)';
+    const n = this.state.numeric;
+
+    const stepper = (sectionId, key, unit, delta, displayLabel) => {
+      const fullKey = sectionId + '.' + key;
+      return {
+        label: displayLabel || key, isStepper: true, isText: false,
+        value: n[fullKey] + (unit ? ' ' + unit : ''),
+        onDec: () => this.step(fullKey, -delta),
+        onInc: () => this.step(fullKey, delta),
+      };
+    };
+    const textField = (label, value) => ({ label, isStepper: false, isText: true, value });
+
+    const categoryDefs = [
+      { id: 'sospensioni', name: 'Sospensioni', icon: 'sospensioni', subs: [
+        { id: 'forcella', name: 'Forcella', noteKey: 'forcella', fields: [
+          stepper('forcella', 'Molla', 'N/mm', 0.1, 'Durezza molla'),
+          stepper('forcella', 'Altezza', 'mm', 1),
+          stepper('forcella', 'Compressione', 'click', 1),
+          stepper('forcella', 'Estensione', 'click', 1),
+          stepper('forcella', 'Precarico', 'mm', 1),
+        ]},
+        { id: 'mono', name: 'Mono', noteKey: 'mono', fields: [
+          stepper('mono', 'Molla', 'N/mm', 1, 'Durezza molla'),
+          stepper('mono', 'Altezza', 'mm', 1),
+          stepper('mono', 'Compressione', 'click', 1),
+          stepper('mono', 'Estensione', 'click', 1),
+          stepper('mono', 'Precarico', 'mm', 1),
+        ]},
+      ]},
+      { id: 'gomme', name: 'Gomme', icon: 'gomme', subs: [
+        { id: 'pneuAnt', name: 'Anteriore', noteKey: 'pneuAnt', fields: [
+          textField('Marca', 'Pirelli'),
+          textField('Modello', 'Diablo Superbike'),
+          textField('Mescola', 'SC1'),
+          stepper('pneuAnt', 'Giri', '', 1),
+          stepper('pneuAnt', 'PressioneIngresso', 'bar', 0.1, 'Pressione ingresso'),
+          stepper('pneuAnt', 'PressioneUscita', 'bar', 0.1, 'Pressione uscita'),
+        ]},
+        { id: 'pneuPost', name: 'Posteriore', noteKey: 'pneuPost', fields: [
+          textField('Marca', 'Pirelli'),
+          textField('Modello', 'Diablo Superbike'),
+          textField('Mescola', 'SC2'),
+          stepper('pneuPost', 'Giri', '', 1),
+          stepper('pneuPost', 'PressioneIngresso', 'bar', 0.1, 'Pressione ingresso'),
+          stepper('pneuPost', 'PressioneUscita', 'bar', 0.1, 'Pressione uscita'),
+        ]},
+      ]},
+      { id: 'rapporto', name: 'Rapporto', icon: 'rapporto', subs: null, noteKey: 'rapporto', fields: [
+        stepper('rapporto', 'Pignone', 'T', 1),
+        stepper('rapporto', 'Corona', 'T', 1),
+        stepper('rapporto', 'Passo catena', '', 5),
+      ]},
+      { id: 'elettronica', name: 'Elettronica', icon: 'elettronica', subs: null, noteKey: 'elettronica', fields: [
+        stepper('elettronica', 'Mappa', '', 1),
+        stepper('elettronica', 'TC', '', 1, 'Traction Control'),
+        stepper('elettronica', 'EngineBrake', '', 1, 'Engine Brake'),
+        stepper('elettronica', 'AntiWheelie', '', 1, 'Anti wheelie'),
+      ]},
+    ];
+
+    const selectedCat = this.state.selectedCategory;
+    const activeCategory = categoryDefs.find(c => c.id === selectedCat) || categoryDefs[0];
+    const hasSubs = !!activeCategory.subs;
+    const activeSubId = hasSubs ? (this.state.selectedSub[activeCategory.id] || activeCategory.subs[0].id) : null;
+    const activeLeaf = hasSubs ? (activeCategory.subs.find(s => s.id === activeSubId) || activeCategory.subs[0]) : activeCategory;
+
+    const categories = categoryDefs.map(c => {
+      const isActive = c.id === selectedCat;
+      const iconColor = 'oklch(0.97 0 0)';
+      const iconSrc = 'icons/' + c.icon + '.svg';
+      return {
+        name: c.name,
+        labelColor: iconColor,
+        pillBg: isActive ? 'oklch(1 0 0 / 0.16)' : 'transparent',
+        iconStyle: 'width:36px; height:36px; -webkit-mask-image:url(' + iconSrc + '); mask-image:url(' + iconSrc + '); -webkit-mask-size:contain; mask-size:contain; -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat; -webkit-mask-position:center; mask-position:center; background-color:' + iconColor + ';',
+        onClick: () => this.selectCategory(c.id),
+      };
+    });
+
+    const subTabActiveBg = 'oklch(0.97 0 0)';
+    const subTabActiveFg = 'oklch(0.03 0 0)';
+    const subTabs = hasSubs ? activeCategory.subs.map(s => {
+      const isActive = s.id === activeSubId;
+      return {
+        name: s.name,
+        bg: isActive ? subTabActiveBg : 'transparent',
+        fg: isActive ? subTabActiveFg : 'oklch(0.97 0 0)',
+        border: isActive ? '1px solid ' + subTabActiveBg : '1px solid oklch(1 0 0 / 0.15)',
+        onClick: () => this.selectSub(activeCategory.id, s.id),
+      };
+    }) : [];
+
+    const homeCards = this.state.bikes.map(b => ({
+      id: b.id,
+      name: b.name,
+      subtitle: b.subtitle,
+      rarity: b.rarity,
+      cardColor: b.cardColor,
+      rarityDots: Array(b.rarity === 'Leggendaria' ? 3 : b.rarity === 'Rara' ? 2 : 1).fill(0),
+      rarityColor: b.rarity === 'Leggendaria' ? 'oklch(0.78 0.15 70)' : b.rarity === 'Rara' ? 'oklch(0.87 0.18 250)' : 'oklch(0.67 0 0)',
+      bodyBg: (() => {
+        const hueMatch = /oklch\([\d.]+\s+[\d.]+\s+([\d.]+)/.exec(b.cardColor);
+        const hue = hueMatch ? hueMatch[1] : '250';
+        return `oklch(0.20 0.18 ${hue})`;
+      })(),
+      allMaint: this.sortMaintEnriched(b.id, b.maintenance),
+      onClick: () => this.setState({ homeView: 'detail', selectedBikeId: b.id }),
+      onEdit: (e) => this.editBike(b.id, e),
+      onDelete: (e) => this.deleteBike(b.id, e),
+    }));
+    const selectedBike = this.state.bikes.find(b => b.id === this.state.selectedBikeId) || this.state.bikes[0] || { name: '', subtitle: '', maintenance: [] };
+
+    const checklistItems = this.state.checklist.map(it => ({
+      id: it.id,
+      label: it.label,
+      checked: it.checked,
+      boxBg: it.checked ? activeBg : 'transparent',
+      boxBorder: it.checked ? activeBorder : 'oklch(1 0 0 / 0.2)',
+      textColor: it.checked ? 'oklch(0.67 0 0)' : 'oklch(0.97 0 0)',
+      textDecoration: it.checked ? 'line-through' : 'none',
+      onToggle: () => this.toggleChecklistItem(it.id),
+      onDelete: (e) => { if (e) e.stopPropagation(); this.deleteChecklistItem(it.id); },
+    }));
+
+    return {
+      navHome, navSetup, navAi, catBar,
+      categories,
+      hasSubs,
+      subTabs,
+      activeLeafName: activeLeaf.name,
+      activeFields: activeLeaf.fields,
+      activeNoteValue: this.state.notes[activeLeaf.noteKey],
+      generale: { ...this.state.generale, bestLapColor: lapColor('Mugello', this.state.generale.bestLap) },
+      ...(() => {
+        const weatherLabels = { sole: 'Soleggiato', nuvole: 'Nuvoloso', pioggia: 'Pioggia' };
+        const wId = this.weatherList[this.state.runWeatherIdx];
+        return {
+          runWeatherIsSun: wId === 'sole',
+          runWeatherIsClouds: wId === 'nuvole',
+          runWeatherIsRain: wId === 'pioggia',
+          runWeatherLabel: weatherLabels[wId],
+          runWeatherNext: () => this.cycle('runWeatherIdx', this.weatherList, 1),
+        };
+      })(),
+      oraOpen: () => this.openPicker('ora'),
+      temperaturaOpen: () => this.openPicker('temperatura'),
+      bestLapOpen: () => this.openPicker('bestLap'),
+      giriOpen: () => this.openPicker('giri'),
+      closePicker: () => this.closePicker(),
+      confirmPicker: () => this.confirmPicker(),
+      ...(() => {
+        const pf = this.state.pickerField;
+        if (!pf) return { pickerOpen: false, pickerTitle: '', pickerColumns: [] };
+        const cfg = this.pickerConfigs[pf];
+        const pickerColumns = cfg.columns.map((col, i) => {
+          const len = col.max - col.min + 1;
+          const currentIdx = this.state.pickerIdx[i] ?? 0;
+          const items = Array.from({ length: len }, (_, k) => {
+            const raw = k + col.min;
+            const label = (col.pad ? this.pad(raw, col.pad) : String(raw)) + (col.suffix || '');
+            const isCenter = k === currentIdx;
+            return { label, color: isCenter ? 'oklch(0.97 0 0)' : 'oklch(0.67 0 0)', weight: isCenter ? 800 : 500 };
+          });
+          return {
+            hasSep: !!cfg.seps[i],
+            sep: cfg.seps[i] || '',
+            items,
+            onScroll: (e) => this.onColScroll(i, e),
+            refCb: (el) => { if (el && !el._inited) { el.scrollTop = currentIdx * 40; el._inited = true; } },
+          };
+        });
+        return { pickerOpen: true, pickerTitle: cfg.label, pickerColumns };
+      })(),
+
+      homeIsList: this.state.homeView !== 'detail',
+      homeIsDetail: this.state.homeView === 'detail' && !!this.state.bikes.length,
+      homeCards,
+      addBikeClick: () => this.addBikeAttempt(),
+      bikeLimitCaption: this.state.profilePlan === 'free' ? `${this.state.bikes.length}/1 · piano Free` : 'Illimitate · Premium',
+
+      paywallOpen: this.state.paywallOpen,
+      paywallMessage: this.state.paywallMessage,
+      closePaywall: () => this.closePaywall(),
+      paywallUpgrade: () => this.paywallUpgrade(),
+
+      aiUsageLabel: this.state.profilePlan === 'free' ? `${Math.min(this.state.aiUsedToday, 1)}/1 oggi · Free` : 'Illimitati · Premium',
+      askButtonOpacity: (this.state.profilePlan === 'free' && this.state.aiUsedToday >= 1) ? '0.45' : '1',
+      askAiConsiglio: () => this.askAiConsiglio(),
+      runDetailOpen: this.state.runDetailOpen,
+      openRunDetail: () => this.openRunDetail(),
+      closeRunDetail: () => this.closeRunDetail(),
+      homeListTransformStyle: `transform: translateX(${this.state.runDetailOpen ? '-30%' : '0'}); transition: transform 0.4s cubic-bezier(.4,0,.2,1);`,
+      deleteConfirmOpen: !!this.state.deleteConfirmBikeId,
+      deleteConfirmBikeName: (this.state.bikes.find(b => b.id === this.state.deleteConfirmBikeId) || {}).name || 'questa moto',
+      cancelDeleteBike: () => this.cancelDeleteBike(),
+      confirmDeleteBike: () => this.confirmDeleteBike(),
+      editModalOpen: !!this.state.editModalBikeId,
+      editDraft: this.state.editModalDraft ? {
+        bikeId: this.state.editModalBikeId,
+        name: this.state.editModalDraft.name,
+        subtitle: this.state.editModalDraft.subtitle,
+        onNameChange: (e) => this.updateEditDraft('name', e.target.value),
+        onSubtitleChange: (e) => this.updateEditDraft('subtitle', e.target.value),
+        colorOptions: this.cardColorOptions.map(c => ({
+          value: c.value,
+          ringColor: this.state.editModalDraft.cardColor === c.value ? 'oklch(0.97 0 0)' : 'transparent',
+          onSelect: () => this.updateEditDraft('cardColor', c.value),
+        })),
+        rarityOptions: this.rarityLevels.map(r => {
+          const active = this.state.editModalDraft.rarity === r;
+          return {
+            label: r,
+            bg: active ? 'oklch(1 0 0 / 0.22)' : 'transparent',
+            border: active ? 'oklch(0.97 0 0)' : 'oklch(1 0 0 / 0.2)',
+            fg: active ? 'oklch(0.97 0 0)' : 'oklch(0.67 0 0)',
+            onSelect: () => this.updateEditDraft('rarity', r),
+          };
+        }),
+      } : {},
+      closeEditModal: () => this.closeEditModal(),
+      saveEditDraft: () => this.saveEditDraft(),
+      backToHome: () => this.setState({ homeView: 'list' }),
+      selectedBikeName: selectedBike.name,
+      selectedBikeMaint: this.sortMaintEnriched(selectedBike.id, selectedBike.maintenance || []),
+      editSelectedBike: (e) => this.editBike(this.state.selectedBikeId, e),
+      deleteSelectedBike: (e) => this.deleteBike(this.state.selectedBikeId, e),
+
+      lastSession: { track: 'Mugello', bike: 'Yamaha R6', bestLap: '1:52.340', color: lapColor('Mugello', '1:52.340'), temp: '24°C', weatherLabel: 'Soleggiato', isSun: true, isClouds: false, isRain: false },
+
+      navProfile,
+      profileNickname: this.state.profileNickname,
+      profileEmail: this.state.profileEmail,
+      openEditProfile: () => this.openEditProfile(),
+      openPasswordSheet: () => this.openPasswordSheet(),
+      openSubscriptionSheet: () => this.openSubscriptionSheet(),
+      logout: () => {},
+      openDeleteAccountConfirm: () => this.openDeleteAccountConfirm(),
+
+      authIsLoggedIn: this.state.authIsLoggedIn,
+      setAuthDemoLoggedIn: () => this.setAuthDemoLoggedIn(!this.state.authIsLoggedIn),
+      authFlowDisplay: this.state.authIsLoggedIn ? 'display:none' : 'display:flex',
+      authToggleBg: this.state.authIsLoggedIn ? 'oklch(0.87 0.18 250)' : 'oklch(0 0 0 / 0.35)',
+      authToggleKnobPos: this.state.authIsLoggedIn ? '18px' : '2px',
+      authView: this.state.authView,
+      authIsLogin: this.state.authView === 'login',
+      authIsRegister: this.state.authView === 'register',
+      authIsPremiumOffer: this.state.authView === 'premiumOffer',
+      authIsDone: this.state.authView === 'done',
+      selectLoginTab: () => this.selectAuthTab('login'),
+      selectRegisterTab: () => this.selectAuthTab('register'),
+      loginTabBg: this.state.authView === 'login' ? 'oklch(0.97 0 0)' : 'transparent',
+      loginTabFg: this.state.authView === 'login' ? 'oklch(0.03 0 0)' : 'oklch(0.67 0 0)',
+      registerTabBg: this.state.authView === 'register' ? 'oklch(0.97 0 0)' : 'transparent',
+      registerTabFg: this.state.authView === 'register' ? 'oklch(0.03 0 0)' : 'oklch(0.67 0 0)',
+      loginDraft: {
+        email: this.state.loginDraft.email,
+        password: this.state.loginDraft.password,
+        onEmailChange: (e) => this.updateLoginDraft('email', e.target.value),
+        onPasswordChange: (e) => this.updateLoginDraft('password', e.target.value),
+      },
+      submitLogin: () => this.submitLogin(),
+      registerDraft: {
+        nickname: this.state.registerDraft.nickname,
+        email: this.state.registerDraft.email,
+        password: this.state.registerDraft.password,
+        confirm: this.state.registerDraft.confirm,
+        onNicknameChange: (e) => this.updateRegisterDraft('nickname', e.target.value),
+        onEmailChange: (e) => this.updateRegisterDraft('email', e.target.value),
+        onPasswordChange: (e) => this.updateRegisterDraft('password', e.target.value),
+        onConfirmChange: (e) => this.updateRegisterDraft('confirm', e.target.value),
+      },
+      submitRegister: () => this.submitRegister(),
+      finishFree: () => this.finishOnboarding(false),
+      finishPremium: () => this.finishOnboarding(true),
+      socialGoogle: () => this.socialAuth('google'),
+      socialApple: () => this.socialAuth('apple'),
+
+      planLabel: planIsPremium ? 'Premium' : 'Free',
+      planStatus: planIsPremium ? 'Sbloccato' : 'Gratuito',
+      planDescription: planIsPremium ? 'Pagamento unico effettuato · nessun rinnovo' : 'Sblocca moto, consigli AI e run illimitati con un pagamento unico di €9,99',
+      planFeatures: this.planFeatures,
+      planBorder: planIsPremium ? 'oklch(0.87 0.18 250 / 0.45)' : 'oklch(1 0 0 / 0.16)',
+      planBg: planIsPremium ? 'oklch(0.87 0.18 250 / 0.08)' : 'oklch(1 0 0 / 0.05)',
+      planBadgeFg: planIsPremium ? 'oklch(0.03 0 0)' : 'oklch(0.97 0 0)',
+      planBadgeBg: planIsPremium ? 'oklch(0.87 0.18 250)' : 'oklch(1 0 0 / 0.14)',
+
+      editProfileOpen: this.state.editProfileOpen,
+      closeEditProfile: () => this.closeEditProfile(),
+      editProfileDraft: this.state.editProfileDraft ? {
+        nickname: this.state.editProfileDraft.nickname,
+        email: this.state.editProfileDraft.email,
+        onNicknameChange: (e) => this.updateEditProfileDraft('nickname', e.target.value),
+        onEmailChange: (e) => this.updateEditProfileDraft('email', e.target.value),
+      } : { nickname: '', email: '', onNicknameChange: () => {}, onEmailChange: () => {} },
+      saveEditProfile: () => this.saveEditProfile(),
+
+      passwordSheetOpen: this.state.passwordSheetOpen,
+      closePasswordSheet: () => this.closePasswordSheet(),
+      passwordDraft: this.state.passwordDraft ? {
+        current: this.state.passwordDraft.current,
+        next: this.state.passwordDraft.next,
+        confirm: this.state.passwordDraft.confirm,
+        onCurrentChange: (e) => this.updatePasswordDraft('current', e.target.value),
+        onNextChange: (e) => this.updatePasswordDraft('next', e.target.value),
+        onConfirmChange: (e) => this.updatePasswordDraft('confirm', e.target.value),
+      } : { current: '', next: '', confirm: '', onCurrentChange: () => {}, onNextChange: () => {}, onConfirmChange: () => {} },
+      savePassword: () => this.savePassword(),
+
+      subscriptionSheetOpen: this.state.subscriptionSheetOpen,
+      closeSubscriptionSheet: () => this.closeSubscriptionSheet(),
+      purchasePremium: () => this.purchasePremium(),
+      planIsPremium,
+      planIsFree: !planIsPremium,
+
+      deleteAccountConfirmOpen: this.state.deleteAccountConfirmOpen,
+      closeDeleteAccountConfirm: () => this.closeDeleteAccountConfirm(),
+      confirmDeleteAccount: () => this.confirmDeleteAccount(),
+
+      checklistOpen: this.state.checklistOpen,
+      openChecklist: () => this.setState({ checklistOpen: true }),
+      closeChecklist: () => this.setState({ checklistOpen: false }),
+      checklistItems,
+      checklistDoneCount: this.state.checklist.filter(it => it.checked).length,
+      checklistTotalCount: this.state.checklist.length,
+      addChecklistItem: () => this.addChecklistItemPrompt(),
+
+      setupIsList: this.state.setupView === 'list',
+      setupIsOnboarding: this.state.setupView === 'onboarding',
+      setupIsAllSessions: this.state.setupView === 'allSessions',
+      openOnboarding: () => this.setState({ setupView: 'onboarding' }),
+      closeOnboarding: () => this.setState({ setupView: 'list' }),
+      startSession: () => this.startNewSession(),
+      openAllSessions: () => this.setState({ setupView: 'allSessions' }),
+      closeAllSessions: () => this.setState({ setupView: 'list' }),
+
+      ...this.carouselVals(),
+      ...(() => {
+        const all = allSessionsData;
+        const today = all.find(s => s.date === 'Oggi');
+        const past = all.filter(s => s.date !== 'Oggi').map(withDot);
+
+        const bikeFilterOptions = ['Tutte', 'Yamaha R6', 'Ducati Panigale V2'];
+        const trackFilterOptions = ['Tutte', 'Mugello', 'Misano', 'Vallelunga'];
+        const dateFilterOptions = ['Tutte', 'Ultimi 7 giorni', 'Ultimo mese'];
+        const bikeF = bikeFilterOptions[this.state.filterBikeIdx];
+        const trackF = trackFilterOptions[this.state.filterTrackIdx];
+        const dateF = dateFilterOptions[this.state.filterDateIdx];
+
+        const filteredAll = all.filter(s => {
+          if (bikeF !== 'Tutte' && s.bike !== bikeF) return false;
+          if (trackF !== 'Tutte' && s.track !== trackF) return false;
+          if (dateF === 'Ultimi 7 giorni' && s.daysAgo > 7) return false;
+          if (dateF === 'Ultimo mese' && s.daysAgo > 30) return false;
+          return true;
+        }).map(withDot);
+
+        return {
+          sessions: all,
+          hasToday: !!today,
+          todaySession: today ? withDot(today) : {},
+          pastSessions: past.slice(0, 3),
+          hasMoreSessions: past.length > 3,
+
+          allSessionsFiltered: filteredAll,
+          filterBikeLabel: bikeF,
+          filterTrackLabel: trackF,
+          filterDateLabel: dateF,
+          cycleFilterBike: () => this.cycle('filterBikeIdx', bikeFilterOptions, 1),
+          cycleFilterTrack: () => this.cycle('filterTrackIdx', trackFilterOptions, 1),
+          cycleFilterDate: () => this.cycle('filterDateIdx', dateFilterOptions, 1),
+        };
+      })(),
+      aiHistory: [
+        { question: '"Moto nervosa in percorrenza"', answer: 'Mono precarico -1mm', time: '2 giorni fa' },
+        { question: '"Scarica in uscita di curva"', answer: 'Rapporto 15/45', time: '1 settimana fa' },
+        { question: '"Sottosterzo in staccata"', answer: 'Forcella compressione +2 click', time: '2 settimane fa' },
+      ],
+    };
+  }
+}
+
+</script>
+</body>
+</html>
