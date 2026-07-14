@@ -7,7 +7,7 @@ import SwiftUI
 enum AppFont {
     private static let interFamily = "Inter"
 
-    private(set) static var usingFallback = !interAvailable
+    static var usingFallback: Bool { !interAvailable }
 
     private static var interAvailable: Bool {
         UIFont.familyNames.contains { $0.localizedCaseInsensitiveCompare(interFamily) == .orderedSame }
