@@ -37,12 +37,14 @@ Non affermare mai che una feature "funziona" senza aver fatto questo giro (build
 
 ## Navigazione — mapping presentazioni (Jetpack Navigation 3)
 
-- **Push (NavEntry in back stack)**: Checklist pista, Dettaglio run, Manutenzione moto, Nuova sessione, Tutte le sessioni.
-- **`ModalBottomSheet`**: Modifica moto, Modifica profilo, Modifica password, Abbonamento, wheel/number picker.
-- **`AlertDialog`** (destructive): Elimina moto, Elimina account.
-- **Paywall**: `ModalBottomSheet` custom (non `AlertDialog`, serve contenuto custom), pilotato da uno `StateFlow<PaywallReason?>` condiviso a livello root.
+Implementato in Fase 2 (`navigation/AppRoute.kt`, `AppSheet.kt`, `AppDialog.kt`, `PaywallReason.kt`, `AppNavActions.kt`, `RootScaffold.kt`). Le schermate di destinazione restano placeholder fino a Fase 3/4/6 — solo l'infrastruttura è reale.
+
+- **Push (NavEntry in back stack)**: Checklist pista, Dettaglio run, Manutenzione moto, Nuova sessione, Tutte le sessioni. `AppRoute` è un sealed interface (include anche `HomeRoot`/`SetupRoot`/`ConsigliAIRoot`/`ProfiloRoot`, i root dei 4 tab); ogni tab ha il proprio `SnapshotStateList<AppRoute>` (`remember { mutableStateListOf(...) }`, non `rememberNavBackStack` — non serve la persistenza tra process death via kotlinx.serialization in questa fase), renderizzato da un unico `NavDisplay` con `entryProvider`.
+- **Bottom sheet / alert dialog**: Modifica moto, Modifica profilo, Modifica password, Abbonamento, wheel/number picker (sheet, `AppSheet`); Elimina moto, Elimina account (dialog distruttivo, `AppDialog`). **Non** `ModalBottomSheet`/`AlertDialog` di Material3: aprono in una `Dialog`, una finestra Android separata che Haze non può sfocare (limite noto della libreria — non può campionare un backdrop fuori dalla propria finestra). Implementati come overlay custom (`AppBottomSheetHost.kt`, `AppAlertDialogHost.kt`) nello stesso `Box`/`CompositionLocalProvider(LocalHazeState)` di `RootScaffold`, con `appGlass` per il trattamento vetro e comportamento equivalente (scrim, dismiss su tap/back).
+- **Paywall**: stesso pattern overlay-custom (`PaywallSheet.kt`), pilotato da `PaywallReason?` esposto tramite `AppNavActions.showPaywall` — non un vero `StateFlow` root-level ma stato Compose (`remember { mutableStateOf<PaywallReason?>(null) }`) hoistato in `RootScaffold`, sufficiente finché nessun ViewModel esterno deve osservarlo.
+- `LocalAppNavActions` (CompositionLocal, stesso pattern di `LocalHazeState`) espone `navigate`/`navigateBack`/`openSheet`/`closeSheet`/`openDialog`/`closeDialog`/`showPaywall` a qualunque schermata annidata senza prop-drilling.
 - Root: `AppRoot.kt` con switch `Loading / LoggedOut / LoggedIn` guidato da `AuthViewModel`.
-- Ogni tab mantiene il proprio back stack (`SnapshotStateList<AppRoute>`) per preservare stato/scroll allo switch tab.
+- Ogni tab mantiene il proprio back stack (`SnapshotStateList<AppRoute>`) per preservare lo stato di navigazione allo switch tab (il `remember` dei 4 back stack sta sopra il `when(selectedTab)` in `RootScaffold`).
 
 ## Rischi/decisioni aperte da tenere a mente
 
@@ -53,6 +55,7 @@ Non affermare mai che una feature "funziona" senza aver fatto questo giro (build
 5. **Wheel picker**: Compose non ha un equivalente nativo di `Picker(.wheel)` — da costruire (es. `LazyColumn` con snapping) in Fase 4.
 6. **Gradle wrapper su Windows**: bit eseguibile + line-ending gestiti da `.gitattributes` alla radice (`android/gradlew text eol=lf`) + `git update-index --chmod=+x android/gradlew` dopo la prima generazione — altrimenti la CI Linux fallisce per permessi.
 7. **AGP 9 evitata**: AGP 9.x ha introdotto il supporto Kotlin integrato che rende il plugin `org.jetbrains.kotlin.android` opzionale/deprecato; provato in Fase 0 e risultato incompatibile con il setup KSP+Compose+Hilt corrente (crash di cast interno anche con l'opt-out `android.builtInKotlin=false`). Risolto restando su **AGP 8.13.0**, che supporta comunque compileSdk 36 mantenendo il plugin Kotlin classico — nessuna migrazione necessaria per ora. Da rivalutare solo se una libreria futura richiederà esplicitamente AGP 9+.
+8. **Sheet/dialog e Haze**: Material3 `ModalBottomSheet`/`AlertDialog` aprono in una `Dialog` (finestra Android separata); Haze sfoca solo contenuto nella stessa finestra/albero di composizione, quindi non può campionare il backdrop reale dietro quei componenti. Risolto in Fase 2 con overlay custom (`AppBottomSheetHost.kt`, `AppAlertDialogHost.kt`, `PaywallSheet.kt`) nello stesso `Box` di `RootScaffold` — stesso `LocalHazeState`, stesso comportamento (scrim, dismiss su tap/back) ma nessuna finestra separata. Non tornare a Material3 `ModalBottomSheet`/`AlertDialog` per superfici che devono avere l'effetto vetro.
 
 ## Convenzioni di codice (Kotlin)
 
