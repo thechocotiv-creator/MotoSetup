@@ -1,50 +1,40 @@
-# CLAUDE.md — MotoSetup (iOS)
+# CLAUDE.md — MotoSetup
 
-Guida di riferimento per lo sviluppo dell'app MotoSetup. Modificare questo file solo quando una decisione architetturale cambia davvero — non per dettagli di singola schermata.
+Guida di riferimento condivisa tra le due piattaforme. Contiene solo ciò che **non deve divergere** tra iOS e Android (business logic, design token, schema dati, copy). Modificare solo quando una decisione davvero cambia — non per dettagli di singola schermata.
 
 ## Cos'è MotoSetup
 
-App iOS in italiano per motociclisti da pista: garage moto, sessioni/run con parametri di setup (sospensioni, gomme, rapporti, elettronica), manutenzione moto, consigli AI sull'assetto, piano Premium a pagamento unico (€9,99, non abbonamento).
+App in italiano per motociclisti da pista: garage moto, sessioni/run con parametri di setup (sospensioni, gomme, rapporti, elettronica), manutenzione moto, consigli AI sull'assetto, piano Premium a pagamento unico (€9,99, non abbonamento).
 
-La fonte di verità per design, copy esatto e business logic è `design_handoff_motosetup_app/README.md` e gli screenshot in `design_handoff_motosetup_app/screenshots/`. `MotoSetup App.dc.html` e `ios-frame.jsx` sono **riferimenti di design**, non codice da portare: vanno ricreati nativamente in SwiftUI.
+## Fonte di verità
 
-## Ambiente di sviluppo — IMPORTANTE
+Design, copy esatto e business logic: `design_handoff_motosetup_app/README.md` e gli screenshot in `design_handoff_motosetup_app/screenshots/`. `MotoSetup App.dc.html` e `ios-frame.jsx` sono **riferimenti di design**, non codice da portare: vanno ricreati nativamente su ciascuna piattaforma.
 
-Lo sviluppo avviene su **Windows**: qui non è disponibile Xcode né un Simulator. Non è possibile compilare, eseguire o testare localmente in questa sessione.
+## Struttura del repo (monorepo)
 
-- Il progetto Xcode **non va creato/committato a mano come `.xcodeproj`**: si usa **XcodeGen** con il manifest `project.yml` alla radice, che genera il progetto in CI (vedi `.github/workflows/`).
-- La verifica avviene tramite **GitHub Actions su runner macOS**: build (`xcodebuild build`) e test (`xcodebuild test`) headless su Simulator. Non fare mai affermazioni tipo "ho verificato che funziona" senza che la CI sia passata — se non è possibile lanciare la CI, dichiararlo esplicitamente.
-- Se in futuro sarà disponibile un Mac (fisico, VM o sessione Claude Code su macOS), lì si potrà aprire `project.yml` con `xcodegen generate` e usare Xcode/Simulator normalmente.
+```
+CLAUDE.md                      -- questo file: business logic e design condivisi
+design_handoff_motosetup_app/  -- design handoff (condiviso)
+ios/                            -- app SwiftUI, vedi ios/CLAUDE.md
+android/                        -- app Kotlin/Compose, vedi android/CLAUDE.md
+.github/workflows/              -- ios-ci.yml e android-ci.yml, innescate solo dai path pertinenti
+```
 
-## Piattaforma e target
+Ogni sottocartella ha un proprio `CLAUDE.md` con le sole informazioni specifiche di piattaforma (ambiente, stack tecnico, architettura, mapping navigazione, rischi/convenzioni). Le regole di business e i design token vivono **solo qui** — se una piattaforma ha bisogno di adattarli, il file da aggiornare è questo, non la copia locale.
 
-- Solo **iOS** (iPhone). Android è fuori scope: sarà eventualmente un progetto separato con stack diverso (SwiftUI non gira su Android).
-- **Deployment target: iOS 18.0**. Xcode/SDK richiesti: Xcode 26+ (necessario anche solo per compilare i branch `#available(iOS 26, *)`).
-- **Liquid Glass** (API iOS 26: `.glassEffect()`, `GlassEffectContainer`, `.buttonStyle(.glass)`, glass `TabView`) usato ovunque il design lo richiede, con **fallback su iOS 18–25** basato su `.ultraThinMaterial` + bordo 1px + ombra, mai la sola API iOS 26 senza fallback. Vedi `DesignSystem/GlassModifier.swift` come primitiva unica — non duplicare codice di blur/bordo in giro per le view.
-- Riferirsi alla skill/plugin **Liquid Glass** per pattern, pitfall (`GlassEffectContainer` obbligatorio per glass vicini, no glass su liste/contenuti, solo su nav layer/controlli) e API aggiornate.
-- Tema **dark-mode fisso**, nessuna light mode.
-- Lingua UI: **italiano ovunque**, stringhe esatte da `README.md` del design handoff dove specificate (es. messaggi paywall) — non parafrasare.
-
-## Architettura
-
-**MVVM + Repository layer + DI via `@Environment`.**
-
-- Le View non chiamano mai direttamente Firebase/StoreKit: passano sempre da un protocollo di repository/service (`BikeRepository`, `AuthService`, `EntitlementStore`, ecc.) iniettato tramite `AppEnvironment` in `@Environment(\.appEnvironment)`.
-- Ogni feature ha un `@Observable` ViewModel che orchestra i repository e espone stato alla View.
-- Esiste sempre una implementazione `.live` (Firebase-backed) e una `.preview` (fake in-memory, in `Mocks/PreviewData.swift`) di `AppEnvironment`, per poter usare le SwiftUI Preview senza toccare la rete.
-- Struttura cartelle: `App/`, `DesignSystem/`, `Models/`, `Services/`, `Features/<NomeFeature>/`, `Resources/`, `Mocks/`. Organizzazione per feature, non per layer, tranne le parti trasversali (design system, modelli, servizi).
-
-## Design system — token principali
-
-Fonte: `design_handoff_motosetup_app/README.md` sezione "Design Tokens".
+## Design tokens
 
 - Colori (hex derivati da OKLCH): background `#1c1c1c`, panel `#1f1f1f`, testo primario `#f7f7f7`, testo secondario `#a3a3a3`, accento blu `#7ab8ff`, rosso `#e0432f`, oro `#d9a441`, verde `#52cf83`, viola `#d17ee8`. Questi 5 colori (blu/rosso/oro/verde/viola) sono anche le card-color selezionabili per le moto.
 - Scala stato a 3 colori (riusata sia per manutenzione che per best-lap): rosso = scaduto/peggiore, oro = in scadenza/medio, grigio = ok.
-- Font: **Inter** (pesi 400/500/600/700/800/900), fallback automatico a San Francisco se il file non è embeddato — mai un fallback silenzioso, va segnalato in `Typography.swift`.
+- Font: **Inter** (pesi 400/500/600/700/800/900); ogni piattaforma ha un proprio fallback di sistema se il file non è ancora disponibile (mai un fallback silenzioso — va segnalato in codice).
 - Raggio angoli: bottoni 12–16px, sheet/modali 20–26px (bottom sheet 24px, wheel picker 26px, alert 20px), card moto 13–18px.
-- Effetto vetro: blur 16–32px, saturazione 170–200%, bordo 1px bianco 16–24% opacità, inset highlight in alto, ombra morbida sotto. Vale per tab bar, pill checklist, pill categorie, stepper, input, FAB, tutti i sheet/alert/paywall. **Mai** applicare glass a contenuti/liste — solo a controlli e layer di navigazione (regola della skill Liquid Glass).
+- Effetto "vetro": blur 16–32px, saturazione 170–200%, bordo 1px bianco 16–24% opacità, inset highlight in alto, ombra morbida sotto. Vale per tab bar, pill checklist, pill categorie, stepper, input, FAB, tutti i sheet/alert/paywall. **Mai** applicare glass a contenuti/liste — solo a controlli e layer di navigazione. Come tradurre questo look in API native è specifico di piattaforma (vedi `ios/CLAUDE.md` per Liquid Glass, `android/CLAUDE.md` per Haze).
+- Tema **dark-mode fisso** su entrambe le piattaforme, nessuna light mode.
+- Lingua UI: **italiano ovunque**, stringhe esatte da `design_handoff_motosetup_app/README.md` dove specificate (es. messaggi paywall) — non parafrasare, non deve divergere tra le due app.
 
 ## Modello dati (Firestore)
+
+Stesso progetto Firebase per entrambe le piattaforme (un'app iOS + un'app Android registrate sotto lo stesso progetto).
 
 ```
 users/{uid}                                     -- AppUser (nickname, email, plan, aiUsedToday, aiUsageDate, avatarURL)
@@ -60,9 +50,11 @@ tracks/{trackId}                                -- Elenco piste curato, sola let
 
 Storage: `users/{uid}/avatar.jpg`, `users/{uid}/bikes/{bikeId}/photo.jpg`. Regole di sicurezza: lettura/scrittura solo al proprietario (`request.auth.uid == uid`); `tracks/` sola lettura per utenti autenticati.
 
+La **Cloud Function** per Consigli AI (chiamata LLM lato server, mai chiave API nel client) è platform-agnostic: si costruisce una sola volta e la consumano entrambe le app.
+
 ## Piano Premium — regole (non modificare senza motivo esplicito)
 
-Free di default. Premium = **pagamento unico** €9,99 (StoreKit 2 non-consumable), nessun downgrade.
+Free di default. Premium = **pagamento unico** €9,99 (StoreKit 2 non-consumable su iOS, Google Play Billing non-consumable su Android), nessun downgrade.
 
 | Limite | Free | Messaggio paywall esatto |
 |---|---|---|
@@ -70,28 +62,15 @@ Free di default. Premium = **pagamento unico** €9,99 (StoreKit 2 non-consumabl
 | Consigli AI | 1/giorno | "Hai esaurito il consiglio AI gratuito di oggi. Passa a Premium per consigli illimitati." |
 | Run per sessione | 3 | "Il piano Free include massimo 3 run per sessione. Passa a Premium per run illimitati." |
 
-Manutenzione: nessun limite di piano. Gating centralizzato in `EntitlementStore` (`canAddBike`, `canAskAI`, `canAddRun`); mai duplicare i controlli nei ViewModel. Il paywall è uno **sheet custom** condiviso (`appState.paywallReason`), non un `.alert()` di sistema (non supporta contenuto custom).
+Manutenzione: nessun limite di piano. Gating centralizzato in un unico servizio/entitlement store per piattaforma (mai duplicare i controlli nei ViewModel/View). Il paywall è una **sheet custom** condivisa, non un alert di sistema (serve contenuto custom).
 
-## Navigazione — mapping presentazioni
+## Funzionamento Sessioni e Manutenzione
 
-- `.sheet()`: Modifica moto, Modifica profilo, Modifica password, Abbonamento, wheel picker.
-- `.fullScreenCover()`: Checklist pista, Dettaglio run, Manutenzione moto, Nuova sessione, Tutte le sessioni.
-- `.alert()` / `.confirmationDialog()` (`role: .destructive`): Elimina moto, Elimina account.
-- Tab bar: 4 tab (Home, Setup, Consigli AI, Profilo), root in `TabView` reale (per preservare stato/scroll per tab) con chrome nativo nascosto e `GlassTabBar` custom sovrapposto.
-- Root app: switch tra `.loading` / `OnboardingRootView` (loggedOut) / `RootTabView` (loggedIn), pilotato da `AuthService`.
+- Una **sessione** rappresenta un giorno in pista: pista, moto, meteo, una o più **run** (max 3 su Free, illimitati su Premium). Ogni run ha dati generali (ora, temperatura, best lap, giri) più parametri di setup per categoria (Sospensioni, Gomme, Rapporti, Elettronica) e note testuali per sottocategoria.
+- Ogni voce di **manutenzione** ha `daysSinceService` e `intervalDays`. Stato = `daysSinceService / intervalDays`: **≥ 1.0 → "Scaduta"** (rosso), **≥ 0.8 → "In scadenza"** (oro), **altrimenti → "OK"** (grigio). Ordinamento: Scaduta → In scadenza → OK. Questa è logica pura, va implementata come funzione testabile indipendente dai model, identica su entrambe le piattaforme.
 
-## Rischi/decisioni aperte da tenere a mente
+## Convenzioni generali
 
-1. **Font Inter**: usare la distribuzione statica per-peso (non variable font) per semplicità in SwiftUI; licenza SIL OFL, includere il testo di licenza nel repo quando aggiunta.
-2. **Icone**: meteo ed elettronica mappano bene su SF Symbols; Sospensioni/Gomme/Rapporti non hanno un match nativo preciso — serve una decisione esplicita (symbol approssimato vs icone custom) prima della Fase 4 (Run detail).
-3. **Consigli AI**: richiede una **Firebase Cloud Function** (chiamata LLM lato server, mai chiave API nel client) — infrastruttura aggiuntiva rispetto ad Auth/Firestore/Storage.
-4. **Eliminazione account / cambio email**: Firebase Auth richiede spesso re-autenticazione recente (`requires-recent-login`); l'eliminazione ricorsiva delle subcollection Firestore va fatta lato server (Cloud Function `deleteUserData`), non dal client.
-5. **Wheel picker**: usare `Picker(.wheel)`/`DatePicker(.wheel)` nativi componendo più colonne, non un componente scroll-snap custom.
-6. **Restore Purchases**: obbligatorio per App Review anche se non mostrato nei mockup — aggiungere comunque nello sheet Abbonamento.
-
-## Convenzioni di codice
-
-- Nessun commento superfluo; solo dove il *perché* non è ovvio dal codice.
+- Stringhe utente in italiano esatto come da design handoff; non tradurre né parafrasare i messaggi paywall/errore già definiti.
 - Niente astrazioni premature: se un pattern si ripete 2-3 volte va bene duplicato finché non emerge davvero un terzo caso simile con lo stesso shape.
-- Modelli `Codable` puri, senza logica; la logica di business (es. `maintenanceStatus()`) vive in funzioni pure testabili, non nei model.
-- Le stringhe utente restano in italiano esatto come da design handoff; non tradurre né parafrasare i messaggi paywall/errore già definiti.
+- Logica di business pura (status manutenzione, gating piano, ecc.) va in funzioni testabili separate dai modelli/dati, non incorporata nei model o nelle view.

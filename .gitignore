@@ -36,6 +36,20 @@ fastlane/Preview.html
 fastlane/screenshots
 fastlane/test_output
 
+# Android / Gradle
+.gradle/
+local.properties
+*.apk
+*.aab
+/android/.cxx/
+/android/captures/
+.idea/
+*.iml
+android/.local/
+
+# Firebase Android — never commit real config
+google-services.json
+
 # Misc
 *.log
 .env
