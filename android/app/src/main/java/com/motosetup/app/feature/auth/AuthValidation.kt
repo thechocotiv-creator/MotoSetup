@@ -20,3 +20,13 @@ fun validateRegisterForm(
     if (password.isEmpty()) add("Inserisci la password.")
     if (password != confirmPassword) add("Le password non coincidono.")
 }
+
+fun validatePasswordChangeForm(
+    currentPassword: String,
+    newPassword: String,
+    confirmPassword: String,
+): List<String> = buildList {
+    if (currentPassword.isEmpty()) add("Inserisci la password attuale.")
+    if (newPassword.length < 6) add("La nuova password deve avere almeno 6 caratteri.")
+    if (newPassword != confirmPassword) add("Le password non coincidono.")
+}

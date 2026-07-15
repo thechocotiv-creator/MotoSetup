@@ -1,5 +1,6 @@
 package com.motosetup.app.data.repository
 
+import com.motosetup.app.model.AppUser
 import kotlinx.coroutines.flow.Flow
 
 sealed class AuthState {
@@ -20,4 +21,14 @@ interface AuthRepository {
     suspend fun signInWithGoogle(idToken: String): Result<Boolean>
 
     fun signOut()
+
+    /** Documento users/{uid} dell'utente autenticato — nickname/email/avatarURL per Profilo. */
+    fun observeCurrentUser(): Flow<AppUser?>
+
+    suspend fun updateProfile(nickname: String, email: String): Result<Unit>
+
+    /** Richiede riautenticazione con la password attuale prima di impostare quella nuova. */
+    suspend fun changePassword(currentPassword: String, newPassword: String): Result<Unit>
+
+    suspend fun deleteAccount(): Result<Unit>
 }

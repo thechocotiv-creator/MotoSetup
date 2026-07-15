@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.motosetup.app.feature.home.BikeActionsViewModel
+import com.motosetup.app.feature.profilo.AccountActionsViewModel
 import com.motosetup.app.ui.theme.AppBody
 import com.motosetup.app.ui.theme.AppColor
 import com.motosetup.app.ui.theme.AppHeadline
@@ -83,16 +84,23 @@ fun AppAlertDialogHost(dialog: AppDialog?, onDismiss: () -> Unit) {
 private fun DialogContent(dialog: AppDialog, onDismiss: () -> Unit) {
     when (dialog) {
         is AppDialog.EliminaMoto -> EliminaMotoDialogContent(dialog.bikeId, onDismiss)
-        AppDialog.EliminaAccount -> {
-            // Azione reale in Fase 6 (eliminazione account su Profilo): per ora solo conferma visiva, nessuna cancellazione.
-            ConfirmationDialogContent(
-                title = "Eliminare l'account?",
-                message = "L'azione non può essere annullata.",
-                onConfirm = onDismiss,
-                onDismiss = onDismiss,
-            )
-        }
+        AppDialog.EliminaAccount -> EliminaAccountDialogContent(onDismiss)
     }
+}
+
+@Composable
+private fun EliminaAccountDialogContent(onDismiss: () -> Unit) {
+    val viewModel: AccountActionsViewModel = hiltViewModel()
+
+    ConfirmationDialogContent(
+        title = "Eliminare l'account",
+        message = "Questa azione è definitiva: perderai moto, sessioni e checklist salvate. Non può essere annullata.",
+        onConfirm = {
+            viewModel.deleteAccount()
+            onDismiss()
+        },
+        onDismiss = onDismiss,
+    )
 }
 
 @Composable

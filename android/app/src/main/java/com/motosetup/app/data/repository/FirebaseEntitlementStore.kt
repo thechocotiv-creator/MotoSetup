@@ -52,5 +52,10 @@ class FirebaseEntitlementStore @Inject constructor(
         Unit
     }
 
+    override suspend fun purchasePremium(): Result<Unit> = runCatching {
+        userDoc().update("plan", "premium").await()
+        Unit
+    }
+
     private fun todayDateString(): String = LocalDate.now().toString()
 }

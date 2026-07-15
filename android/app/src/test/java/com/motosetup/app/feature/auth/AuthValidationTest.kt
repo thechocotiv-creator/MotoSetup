@@ -25,4 +25,12 @@ class AuthValidationTest {
         assertTrue(validateRegisterForm("Rossi", "pilota@motosetup.it", "password123", "diversa").isNotEmpty())
         assertTrue(validateRegisterForm("Rossi", "pilota@motosetup.it", "password123", "password123").isEmpty())
     }
+
+    @Test
+    fun passwordChangeFormRequiresCurrentPasswordAndMatchingNewPasswords() {
+        assertTrue(validatePasswordChangeForm("", "password123", "password123").isNotEmpty())
+        assertTrue(validatePasswordChangeForm("attuale", "corta", "corta").isNotEmpty())
+        assertTrue(validatePasswordChangeForm("attuale", "password123", "diversa").isNotEmpty())
+        assertTrue(validatePasswordChangeForm("attuale", "password123", "password123").isEmpty())
+    }
 }

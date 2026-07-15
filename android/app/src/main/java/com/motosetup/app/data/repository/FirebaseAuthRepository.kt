@@ -1,5 +1,6 @@
 package com.motosetup.app.data.repository
 
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
@@ -55,6 +56,36 @@ class FirebaseAuthRepository @Inject constructor(
     }
 
     override fun signOut() = auth.signOut()
+
+    override fun observeCurrentUser(): Flow<AppUser?> = callbackFlow {
+        val listener = userDoc().addSnapshotListener { snapshot, error ->
+            if (error != null) return@addSnapshotListener
+            trySend(snapshot?.toObject(AppUser::class.java))
+        }
+        awaitClose { listener.remove() }
+    }
+
+    override suspend fun updateProfile(nickname: String, email: String): Result<Unit> = runCatching {
+        userDoc().update(mapOf("nickname" to nickname, "email" to email)).await()
+        Unit
+    }
+
+    override suspend fun changePassword(currentPassword: String, newPassword: String): Result<Unit> = runCatching {
+        val user = requireNotNull(auth.currentUser)
+        val credential = EmailAuthProvider.getCredential(requireNotNull(user.email), currentPassword)
+        user.reauthenticate(credential).await()
+        user.updatePassword(newPassword).await()
+        Unit
+    }
+
+    override suspend fun deleteAccount(): Result<Unit> = runCatching {
+        val user = requireNotNull(auth.currentUser)
+        userDoc().delete().await()
+        user.delete().await()
+        Unit
+    }
+
+    private fun userDoc() = firestore.collection("users").document(auth.currentUser?.uid.orEmpty())
 
     /** Ritorna true se il documento non esisteva ed è stato appena creato (nuovo account). */
     private suspend fun createUserDocumentIfMissing(uid: String, nickname: String, email: String): Boolean {

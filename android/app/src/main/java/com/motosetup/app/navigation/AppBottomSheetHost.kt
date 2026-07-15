@@ -37,11 +37,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.motosetup.app.feature.common.AppPickerSheetContent
 import com.motosetup.app.feature.home.BikeEditViewModel
 import com.motosetup.app.feature.onboarding.AuthTextField
+import com.motosetup.app.feature.profilo.PasswordChangeViewModel
+import com.motosetup.app.feature.profilo.ProfileEditViewModel
+import com.motosetup.app.feature.profilo.SubscriptionViewModel
 import com.motosetup.app.feature.sessioni.PickerViewModel
 import com.motosetup.app.feature.sessioni.pickerColumns
 import com.motosetup.app.feature.sessioni.pickerInitialIndices
@@ -111,9 +116,9 @@ fun AppBottomSheetHost(sheet: AppSheet?, onDismiss: () -> Unit) {
 private fun SheetContent(sheet: AppSheet, onDismiss: () -> Unit) {
     when (sheet) {
         is AppSheet.ModificaMoto -> ModificaMotoSheetContent(sheet.bikeId, onDismiss)
-        AppSheet.ModificaProfilo -> PlaceholderSheetContent("Modifica profilo") // contenuto reale in Fase 6
-        AppSheet.ModificaPassword -> PlaceholderSheetContent("Modifica password") // contenuto reale in Fase 6
-        AppSheet.Abbonamento -> PlaceholderSheetContent("Abbonamento") // contenuto reale in Fase 6
+        AppSheet.ModificaProfilo -> ModificaProfiloSheetContent(onDismiss)
+        AppSheet.ModificaPassword -> ModificaPasswordSheetContent(onDismiss)
+        AppSheet.Abbonamento -> AbbonamentoSheetContent()
         is AppSheet.Picker -> PickerSheetContent(sheet, onDismiss)
     }
 }
@@ -140,8 +145,140 @@ private fun PickerSheetContent(sheet: AppSheet.Picker, onDismiss: () -> Unit) {
 }
 
 @Composable
-private fun PlaceholderSheetContent(title: String) {
-    Text(text = title, style = AppHeadline, color = AppColor.textPrimary)
+private fun ModificaProfiloSheetContent(onDismiss: () -> Unit) {
+    val viewModel: ProfileEditViewModel = hiltViewModel()
+    LaunchedEffect(Unit) { viewModel.load() }
+    val state by viewModel.uiState.collectAsState()
+
+    Column {
+        Text(text = "Modifica profilo", style = AppHeadline, color = AppColor.textPrimary)
+
+        Text(
+            text = "NICKNAME",
+            style = AppEyebrow,
+            color = AppColor.textSecondary,
+            modifier = Modifier.padding(top = AppSpacing.lg, bottom = AppSpacing.sm),
+        )
+        AuthTextField(value = state.nickname, onValueChange = viewModel::updateNickname, label = "Nickname")
+
+        Text(
+            text = "EMAIL",
+            style = AppEyebrow,
+            color = AppColor.textSecondary,
+            modifier = Modifier.padding(top = AppSpacing.lg, bottom = AppSpacing.sm),
+        )
+        AuthTextField(value = state.email, onValueChange = viewModel::updateEmail, label = "Email", keyboardType = KeyboardType.Email)
+
+        state.errorMessage?.let {
+            Text(text = it, style = AppCaption, color = AppColor.red, modifier = Modifier.padding(top = AppSpacing.sm))
+        }
+
+        Box(modifier = Modifier.padding(top = AppSpacing.xl)) {
+            PrimaryButton(text = "Salva", onClick = { viewModel.save(onSaved = onDismiss) })
+        }
+    }
+}
+
+@Composable
+private fun ModificaPasswordSheetContent(onDismiss: () -> Unit) {
+    val viewModel: PasswordChangeViewModel = hiltViewModel()
+    val state by viewModel.uiState.collectAsState()
+
+    Column {
+        Text(text = "Modifica password", style = AppHeadline, color = AppColor.textPrimary)
+
+        Text(
+            text = "PASSWORD ATTUALE",
+            style = AppEyebrow,
+            color = AppColor.textSecondary,
+            modifier = Modifier.padding(top = AppSpacing.lg, bottom = AppSpacing.sm),
+        )
+        AuthTextField(value = state.current, onValueChange = viewModel::updateCurrent, label = "Password attuale", isPassword = true)
+
+        Text(
+            text = "NUOVA PASSWORD",
+            style = AppEyebrow,
+            color = AppColor.textSecondary,
+            modifier = Modifier.padding(top = AppSpacing.lg, bottom = AppSpacing.sm),
+        )
+        AuthTextField(value = state.next, onValueChange = viewModel::updateNext, label = "Nuova password", isPassword = true)
+
+        Text(
+            text = "CONFERMA NUOVA PASSWORD",
+            style = AppEyebrow,
+            color = AppColor.textSecondary,
+            modifier = Modifier.padding(top = AppSpacing.lg, bottom = AppSpacing.sm),
+        )
+        AuthTextField(value = state.confirm, onValueChange = viewModel::updateConfirm, label = "Conferma nuova password", isPassword = true)
+
+        state.errorMessage?.let {
+            Text(text = it, style = AppCaption, color = AppColor.red, modifier = Modifier.padding(top = AppSpacing.sm))
+        }
+
+        Box(modifier = Modifier.padding(top = AppSpacing.xl)) {
+            PrimaryButton(text = "Salva password", onClick = { viewModel.save(onSaved = onDismiss) }, enabled = !state.isSaving)
+        }
+    }
+}
+
+private data class PlanFeatureRow(val label: String, val free: String, val premium: String)
+
+private val subscriptionPlanFeatures = listOf(
+    PlanFeatureRow("Moto in garage", "1 moto", "Illimitate"),
+    PlanFeatureRow("Consigli AI", "1 al giorno", "Illimitati"),
+    PlanFeatureRow("Run per sessione", "Max 3 al giorno", "Illimitati"),
+)
+
+@Composable
+private fun AbbonamentoSheetContent() {
+    val viewModel: SubscriptionViewModel = hiltViewModel()
+    val isPremium by viewModel.isPremium.collectAsState()
+
+    Column {
+        Text(text = "Abbonamento", style = AppHeadline, color = AppColor.textPrimary)
+
+        Text(
+            text = "CONFRONTO PIANI",
+            style = AppEyebrow,
+            color = AppColor.textSecondary,
+            modifier = Modifier.padding(top = AppSpacing.lg, bottom = AppSpacing.sm),
+        )
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Row(modifier = Modifier.fillMaxWidth()) {
+                Text(text = "", modifier = Modifier.weight(1.3f))
+                Text(text = "FREE", style = AppEyebrow, color = AppColor.textSecondary, modifier = Modifier.weight(1f), textAlign = TextAlign.Center)
+                Text(text = "PREMIUM", style = AppEyebrow, color = AppColor.accentBlue, modifier = Modifier.weight(1f), textAlign = TextAlign.Center)
+            }
+            subscriptionPlanFeatures.forEach { row ->
+                Row(modifier = Modifier.fillMaxWidth().padding(vertical = AppSpacing.sm), verticalAlignment = Alignment.CenterVertically) {
+                    Text(text = row.label, style = AppCaption, color = AppColor.textPrimary, modifier = Modifier.weight(1.3f))
+                    Text(text = row.free, style = AppCaption, color = AppColor.textSecondary, modifier = Modifier.weight(1f), textAlign = TextAlign.Center)
+                    Text(text = row.premium, style = AppCaption, color = AppColor.accentBlue, modifier = Modifier.weight(1f), textAlign = TextAlign.Center)
+                }
+            }
+        }
+
+        Box(modifier = Modifier.padding(top = AppSpacing.xl)) {
+            if (isPremium) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .appGlass(cornerRadius = AppRadius.button, tint = AppColor.accentBlue)
+                        .padding(vertical = AppSpacing.md, horizontal = AppSpacing.lg),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        text = "Premium sbloccato — pagamento unico effettuato",
+                        style = AppCaption,
+                        color = AppColor.accentBlue,
+                        textAlign = TextAlign.Center,
+                    )
+                }
+            } else {
+                PrimaryButton(text = "Sblocca Premium — €9,99 una tantum", onClick = viewModel::purchasePremium)
+            }
+        }
+    }
 }
 
 @Composable

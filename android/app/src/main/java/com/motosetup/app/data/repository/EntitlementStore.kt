@@ -10,4 +10,7 @@ interface EntitlementStore {
     val aiAdviceUsedToday: Flow<Int>
 
     suspend fun recordAiAdviceUsage(): Result<Unit>
+
+    /** Acquisto fake/debug finché Play Billing non è integrato — vedi android/CLAUDE.md rischio #4. */
+    suspend fun purchasePremium(): Result<Unit>
 }
