@@ -16,4 +16,16 @@ class PlanLimitsTest {
         assertTrue(canAddBike(currentBikeCount = 0, isPremium = true))
         assertTrue(canAddBike(currentBikeCount = 42, isPremium = true))
     }
+
+    @Test
+    fun freePlanAllowsUpToThreeRuns() {
+        assertTrue(canAddRun(currentRunCount = 2, isPremium = false))
+        assertFalse(canAddRun(currentRunCount = 3, isPremium = false))
+    }
+
+    @Test
+    fun premiumPlanHasNoRunLimit() {
+        assertTrue(canAddRun(currentRunCount = 3, isPremium = true))
+        assertTrue(canAddRun(currentRunCount = 99, isPremium = true))
+    }
 }

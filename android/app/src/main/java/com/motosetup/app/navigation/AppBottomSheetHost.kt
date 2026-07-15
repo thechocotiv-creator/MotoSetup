@@ -39,8 +39,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.motosetup.app.feature.common.AppPickerSheetContent
 import com.motosetup.app.feature.home.BikeEditViewModel
 import com.motosetup.app.feature.onboarding.AuthTextField
+import com.motosetup.app.feature.sessioni.PickerViewModel
+import com.motosetup.app.feature.sessioni.pickerColumns
+import com.motosetup.app.feature.sessioni.pickerInitialIndices
+import com.motosetup.app.feature.sessioni.pickerSeparators
+import com.motosetup.app.feature.sessioni.pickerTitle
 import com.motosetup.app.feature.onboarding.PrimaryButton
 import com.motosetup.app.model.BikeRarity
 import com.motosetup.app.ui.theme.AppCaption
@@ -108,6 +114,28 @@ private fun SheetContent(sheet: AppSheet, onDismiss: () -> Unit) {
         AppSheet.ModificaProfilo -> PlaceholderSheetContent("Modifica profilo") // contenuto reale in Fase 6
         AppSheet.ModificaPassword -> PlaceholderSheetContent("Modifica password") // contenuto reale in Fase 6
         AppSheet.Abbonamento -> PlaceholderSheetContent("Abbonamento") // contenuto reale in Fase 6
+        is AppSheet.Picker -> PickerSheetContent(sheet, onDismiss)
+    }
+}
+
+@Composable
+private fun PickerSheetContent(sheet: AppSheet.Picker, onDismiss: () -> Unit) {
+    val viewModel: PickerViewModel = hiltViewModel()
+    LaunchedEffect(sheet.sessionId, sheet.runId) { viewModel.load(sheet.sessionId, sheet.runId) }
+    val run by viewModel.run.collectAsState()
+
+    run?.let { loadedRun ->
+        AppPickerSheetContent(
+            title = pickerTitle(sheet.kind),
+            columns = pickerColumns(sheet.kind),
+            separators = pickerSeparators(sheet.kind),
+            initialIndices = pickerInitialIndices(sheet.kind, loadedRun),
+            onDone = { indices ->
+                viewModel.confirm(sheet.sessionId, sheet.runId, sheet.kind, indices)
+                onDismiss()
+            },
+            onCancel = onDismiss,
+        )
     }
 }
 

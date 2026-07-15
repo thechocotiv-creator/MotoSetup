@@ -9,7 +9,11 @@ import com.motosetup.app.data.repository.FirebaseBikeRepository
 import com.motosetup.app.data.repository.FirebaseChecklistRepository
 import com.motosetup.app.data.repository.FirebaseEntitlementStore
 import com.motosetup.app.data.repository.FirebaseMaintenanceRepository
+import com.motosetup.app.data.repository.FirebaseSessionRepository
+import com.motosetup.app.data.repository.FirebaseTrackRepository
 import com.motosetup.app.data.repository.MaintenanceRepository
+import com.motosetup.app.data.repository.SessionRepository
+import com.motosetup.app.data.repository.TrackRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -38,4 +42,12 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindEntitlementStore(impl: FirebaseEntitlementStore): EntitlementStore
+
+    @Binds
+    @Singleton
+    abstract fun bindTrackRepository(impl: FirebaseTrackRepository): TrackRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindSessionRepository(impl: FirebaseSessionRepository): SessionRepository
 }
