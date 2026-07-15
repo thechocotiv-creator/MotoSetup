@@ -87,7 +87,8 @@ fun RootScaffold() {
                 modifier = Modifier
                     .fillMaxSize()
                     .appGlassBackdrop()
-                    .windowInsetsPadding(WindowInsets.statusBars),
+                    .windowInsetsPadding(WindowInsets.statusBars)
+                    .padding(bottom = AppSpacing.tabBarClearance),
             ) {
                 NavDisplay(
                     backStack = currentBackStack,

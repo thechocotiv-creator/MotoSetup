@@ -18,4 +18,7 @@ object AppSpacing {
     val lg = 16.dp
     val xl = 24.dp
     val xxl = 32.dp
+
+    /** Riserva sotto il contenuto di NavDisplay perché GlassTabBar è un overlay, non consuma spazio di layout — vedi RootScaffold. */
+    val tabBarClearance = 96.dp
 }

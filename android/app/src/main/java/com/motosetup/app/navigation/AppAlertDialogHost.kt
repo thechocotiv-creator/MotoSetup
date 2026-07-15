@@ -9,16 +9,27 @@ import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.motosetup.app.feature.home.BikeActionsViewModel
+import com.motosetup.app.ui.theme.AppBody
 import com.motosetup.app.ui.theme.AppColor
 import com.motosetup.app.ui.theme.AppHeadline
 import com.motosetup.app.ui.theme.AppRadius
@@ -61,7 +72,7 @@ fun AppAlertDialogHost(dialog: AppDialog?, onDismiss: () -> Unit) {
                     .padding(AppSpacing.xl),
             ) {
                 if (latest != null) {
-                    DialogContent(latest)
+                    DialogContent(latest, onDismiss)
                 }
             }
         }
@@ -69,10 +80,70 @@ fun AppAlertDialogHost(dialog: AppDialog?, onDismiss: () -> Unit) {
 }
 
 @Composable
-private fun DialogContent(dialog: AppDialog) {
-    val title = when (dialog) {
-        is AppDialog.EliminaMoto -> "Eliminare la moto?"
-        AppDialog.EliminaAccount -> "Eliminare l'account?"
+private fun DialogContent(dialog: AppDialog, onDismiss: () -> Unit) {
+    when (dialog) {
+        is AppDialog.EliminaMoto -> EliminaMotoDialogContent(dialog.bikeId, onDismiss)
+        AppDialog.EliminaAccount -> {
+            // Azione reale in Fase 6 (eliminazione account su Profilo): per ora solo conferma visiva, nessuna cancellazione.
+            ConfirmationDialogContent(
+                title = "Eliminare l'account?",
+                message = "L'azione non può essere annullata.",
+                onConfirm = onDismiss,
+                onDismiss = onDismiss,
+            )
+        }
     }
-    Text(text = title, style = AppHeadline, color = AppColor.textPrimary)
+}
+
+@Composable
+private fun EliminaMotoDialogContent(bikeId: String, onDismiss: () -> Unit) {
+    val viewModel: BikeActionsViewModel = hiltViewModel()
+    val bike by remember(bikeId) { viewModel.observeBike(bikeId) }.collectAsState(initial = null)
+
+    ConfirmationDialogContent(
+        title = "Eliminare moto",
+        message = "Eliminare ${bike?.name.orEmpty()} dal garage? L'azione non può essere annullata.",
+        onConfirm = {
+            viewModel.deleteBike(bikeId)
+            onDismiss()
+        },
+        onDismiss = onDismiss,
+    )
+}
+
+@Composable
+private fun ConfirmationDialogContent(title: String, message: String, onConfirm: () -> Unit, onDismiss: () -> Unit) {
+    Column {
+        Text(text = title, style = AppHeadline, color = AppColor.textPrimary, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
+        Text(
+            text = message,
+            style = AppBody,
+            color = AppColor.textSecondary,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth().padding(top = AppSpacing.sm, bottom = AppSpacing.lg),
+        )
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(AppSpacing.sm)) {
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .appGlass(cornerRadius = AppRadius.button)
+                    .clickable(onClick = onDismiss)
+                    .padding(vertical = AppSpacing.md),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(text = "Annulla", style = AppHeadline, color = AppColor.textPrimary)
+            }
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .clip(RoundedCornerShape(AppRadius.button))
+                    .background(AppColor.red)
+                    .clickable(onClick = onConfirm)
+                    .padding(vertical = AppSpacing.md),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(text = "Elimina", style = AppHeadline, color = AppColor.textPrimary)
+            }
+        }
+    }
 }
