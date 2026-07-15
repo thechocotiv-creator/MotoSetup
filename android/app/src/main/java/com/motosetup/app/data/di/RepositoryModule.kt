@@ -1,9 +1,11 @@
 package com.motosetup.app.data.di
 
+import com.motosetup.app.data.repository.AIAdviceRepository
 import com.motosetup.app.data.repository.AuthRepository
 import com.motosetup.app.data.repository.BikeRepository
 import com.motosetup.app.data.repository.ChecklistRepository
 import com.motosetup.app.data.repository.EntitlementStore
+import com.motosetup.app.data.repository.FirebaseAIAdviceRepository
 import com.motosetup.app.data.repository.FirebaseAuthRepository
 import com.motosetup.app.data.repository.FirebaseBikeRepository
 import com.motosetup.app.data.repository.FirebaseChecklistRepository
@@ -50,4 +52,8 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindSessionRepository(impl: FirebaseSessionRepository): SessionRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindAIAdviceRepository(impl: FirebaseAIAdviceRepository): AIAdviceRepository
 }

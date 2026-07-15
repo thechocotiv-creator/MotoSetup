@@ -28,4 +28,16 @@ class PlanLimitsTest {
         assertTrue(canAddRun(currentRunCount = 3, isPremium = true))
         assertTrue(canAddRun(currentRunCount = 99, isPremium = true))
     }
+
+    @Test
+    fun freePlanAllowsOneAiAdvicePerDay() {
+        assertTrue(canAskAiAdvice(aiAdviceUsedToday = 0, isPremium = false))
+        assertFalse(canAskAiAdvice(aiAdviceUsedToday = 1, isPremium = false))
+    }
+
+    @Test
+    fun premiumPlanHasNoAiAdviceLimit() {
+        assertTrue(canAskAiAdvice(aiAdviceUsedToday = 1, isPremium = true))
+        assertTrue(canAskAiAdvice(aiAdviceUsedToday = 99, isPremium = true))
+    }
 }
